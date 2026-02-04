@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>صحتي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg2: #141414;
+            --card: #1a1a1a;
+            --blue: #4fc3f7;
+            --teal: #26c6da;
+            --white: #ffffff;
+            --gray: #a0a0a0;
+            --muted: #666;
+            --border: #282828;
+            --orange: #ffa726;
+            --red: #ef5350;
+            --green: #66bb6a;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg);
+            color: var(--white);
+        }
+
+        .app {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Screens */
+        .screens {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            background: var(--bg);
+            display: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .screen.active { display: block; }
+
+        .screen-inner {
+            min-height: 100%;
+            padding-bottom: 20px;
+        }
+
+        /* Status */
+        .status {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            padding-top: max(15px, env(safe-area-inset-top));
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* Header */
+        .header {
+            padding: 10px 20px 20px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            font-size: 38px;
+            color: var(--blue);
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 24px;
+            color: var(--gray);
+        }
+
+        .greeting {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .greeting h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .greeting p {
+            font-size: 16px;
+            color: var(--gray);
+        }
+
+        /* Search */
+        .search {
+            display: flex;
+            align-items: center;
+            background: var(--card);
+            border-radius: 14px;
+            padding: 16px 18px;
+            gap: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .search input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-family: inherit;
+            font-size: 16px;
+            text-align: right;
+            outline: none;
+        }
+
+        .search input::placeholder { color: var(--muted); }
+
+        .search-icon {
+            font-size: 22px;
+            color: var(--blue);
+        }
+
+        /* Banner */
+        .banner {
+            margin: 20px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #00838f 100%);
+            padding: 22px;
+            position: relative;
+            min-height: 125px;
+            display: flex;
+            align-items: center;
+        }
+
+        .banner-content {
+            flex: 1;
+            padding-left: 70px;
+        }
+
+        .banner-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .banner h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .banner p {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .banner-emoji {
+            position: absolute;
+            left: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 55px;
+        }
+
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 18px 0;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--muted);
+        }
+
+        .dot.active { background: var(--blue); }
+
+        /* Section */
+        .section {
+            padding: 0 20px 25px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-link {
+            font-size: 14px;
+            color: var(--blue);
+        }
+
+        /* Activity */
+        .activity {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .activity h4 {
+            font-size: 16px;
+            color: var(--gray);
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .activity p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #29b6f6 0%, #26c6da 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            opacity: 0.9;
+            transform: scale(0.99);
+        }
+
+        /* Quick Items */
+        .quick-items {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+
+        .quick-items::-webkit-scrollbar { display: none; }
+
+        .quick-item {
+            min-width: 110px;
+            background: var(--card);
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .quick-item-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            background: var(--bg2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .quick-item span {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        /* Bottom Nav */
+        .nav {
+            background: var(--bg2);
+            display: flex;
+            justify-content: space-around;
+            padding: 14px 10px;
+            padding-bottom: max(14px, env(safe-area-inset-bottom));
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+        }
+
+        .nav-btn.active { background: rgba(79,195,247,0.12); }
+
+        .nav-btn .icon {
+            font-size: 28px;
+            color: var(--muted);
+        }
+
+        .nav-btn.active .icon { color: var(--blue); }
+
+        .nav-btn .text {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .nav-btn.active .text { color: var(--blue); }
+
+        /* Page Header */
+        .page-head {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            padding-top: max(20px, env(safe-area-inset-top));
+            position: relative;
+        }
+
+        .back {
+            position: absolute;
+            right: 18px;
+            font-size: 34px;
+            color: var(--white);
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* Options */
+        .options {
+            padding: 15px 20px;
+        }
+
+        .option {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .option:active { background: var(--bg2); }
+
+        .option.teal {
+            background: rgba(38,198,218,0.08);
+            border-color: var(--teal);
+        }
+
+        .option.orange {
+            background: rgba(255,167,38,0.1);
+            border-color: var(--orange);
+            position: relative;
+        }
+
+        .new-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--orange);
+            color: #000;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 14px;
+        }
+
+        .option-arrow {
+            font-size: 24px;
+            color: var(--muted);
+            margin-left: 15px;
+        }
+
+        .option-info {
+            flex: 1;
+            text-align: right;
+        }
+
+        .option-info h4 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .option-info p {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* Rooms */
+        .rooms {
+            padding: 15px 20px;
+        }
+
+        .room {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 18px;
+            border: 1px solid var(--border);
+        }
+
+        .room-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .room-info {
+            flex: 1;
+            text-align: right;
+        }
+
+        .room-info h4 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .room-info p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .badge {
+            padding: 7px 16px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .badge.live {
+            background: rgba(102,187,106,0.15);
+            color: var(--green);
+        }
+
+        .badge.later {
+            background: rgba(255,167,38,0.15);
+            color: var(--orange);
+        }
+
+        .room-meta {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 18px;
+            justify-content: flex-end;
+        }
+
+        .meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .meta .em { color: var(--blue); }
+
+        .room-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .avatars {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        .av {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid var(--card);
+            margin-right: -10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .av:nth-child(1) { background: #5c6bc0; }
+        .av:nth-child(2) { background: #26a69a; }
+        .av:nth-child(3) { background: #ffa726; }
+        .av.more {
+            background: var(--bg2);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .join {
+            background: linear-gradient(135deg, #29b6f6 0%, #26c6da 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .join:active { transform: scale(0.97); }
+
+        .join.gray {
+            background: var(--bg2);
+            color: var(--gray);
+        }
+
+        /* Session */
+        .session {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .session.active { display: flex; }
+
+        .session-head {
+            padding: 18px 20px;
+            padding-top: max(18px, env(safe-area-inset-top));
+            background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, transparent 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        .session-back {
+            font-size: 32px;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .session-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .timer {
+            background: var(--red);
+            padding: 7px 15px;
+            border-radius: 22px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-dot {
+            width: 9px;
+            height: 9px;
+            background: white;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .videos {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1.3fr 1fr 1fr;
+            gap: 4px;
+            padding: 75px 4px 10px;
+            background: #111;
+        }
+
+        .video {
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .video.main {
+            grid-column: span 2;
+            background: linear-gradient(145deg, #1a3a4a, #0d2030);
+        }
+
+        .video-avatar {
+            width: 58px;
+            height: 58px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .video.main .video-avatar {
+            width: 75px;
+            height: 75px;
+            font-size: 38px;
+            background: rgba(79,195,247,0.2);
+        }
+
+        .video-name {
+            position: absolute;
+            bottom: 10px;
+            right: 12px;
+            background: rgba(0,0,0,0.75);
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .muted {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--red);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .warning {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--orange);
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .controls {
+            background: rgba(0,0,0,0.97);
+            padding: 22px 20px;
+            padding-bottom: max(22px, env(safe-area-inset-bottom));
+        }
+
+        .ctrl-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .ctrl {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.12);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ctrl:active { transform: scale(0.92); }
+        .ctrl.on { background: var(--blue); }
+
+        .ctrl.end {
+            background: var(--red);
+            width: 64px;
+            height: 64px;
+            font-size: 28px;
+        }
+
+        .ctrl-extra {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+        }
+
+        .extra {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .extra-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="screens">
+            <!-- Home -->
+            <div class="screen active" id="s-home">
+                <div class="screen-inner">
+                    <div class="status">
+                        <span>٦:٣٥</span>
+                        <div class="status-icons">
+                            <span>⚡</span>
+                            <span>📶</span>
+                            <span>🔋</span>
+                        </div>
+                    </div>
+
+                    <div class="header">
+                        <div class="header-top">
+                            <div class="header-icons">
+                                <span>☰</span>
+                                <span>🔔</span>
+                                <span>🎧</span>
+                            </div>
+                            <div class="logo">✓</div>
+                        </div>
+
+                        <div class="greeting">
+                            <h1>مرحباً، محمد</h1>
+                            <p>كيف حال صحتك اليوم؟</p>
+                        </div>
+
+                        <div class="search">
+                            <input type="text" placeholder="ابحث عن أي شيء، مثال: فحص">
+                            <span class="search-icon">🔍</span>
+                        </div>
+                    </div>
+
+                    <div class="banner">
+                        <div class="banner-content">
+                            <span class="banner-tag">الحملة الوطنية للتطعيم</span>
+                            <h3>لقاح الإنفلونزا الموسمية</h3>
+                            <p>احجز موعدك السنوية واحفظها الآن</p>
+                        </div>
+                        <span class="banner-emoji">💉</span>
+                    </div>
+
+                    <div class="dots">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-head">
+                            <span class="section-title">نشاطك اليومي</span>
+                        </div>
+                        <div class="activity">
+                            <h4>لم يتم الربط حتى الآن</h4>
+                            <p>السماح بالوصول الى تطبيق Health الخاص بك لمتابعة نشاطك الصحي</p>
+                            <button class="btn">اضغط للسماح</button>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-head">
+                            <span class="section-title">آخر مستجداتك</span>
+                            <span class="section-link">عرض الكل ←</span>
+                        </div>
+                        <div class="quick-items">
+                            <div class="quick-item">
+                                <div class="quick-item-icon">📅</div>
+                                <span>الأحداث</span>
+                            </div>
+                            <div class="quick-item">
+                                <div class="quick-item-icon">💳</div>
+                                <span>بطاقات التأمين</span>
+                            </div>
+                            <div class="quick-item">
+                                <div class="quick-item-icon">🔬</div>
+                                <span>بدء الفحوصات</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointments -->
+            <div class="screen" id="s-appt">
+                <div class="page-head">
+                    <span class="back" onclick="go('home')">›</span>
+                    <span class="page-title">نوع الموعد</span>
+                </div>
+
+                <div class="options">
+                    <div class="option">
+                        <span class="option-arrow">‹</span>
+                        <div class="option-info">
+                            <h4><span>⏱️</span> استشارة فورية</h4>
+                            <p>تحدث مع طبيب الآن بدون أي حجز مسبق</p>
+                        </div>
+                    </div>
+
+                    <div class="option">
+                        <span class="option-arrow">‹</span>
+                        <div class="option-info">
+                            <h4><span>🏥</span> موعد حضوري</h4>
+                            <p>حجز موعد حضوري في أحد المنشآت التابعة</p>
+                        </div>
+                    </div>
+
+                    <div class="option">
+                        <span class="option-arrow">‹</span>
+                        <div class="option-info">
+                            <h4><span>📱</span> موعد افتراضي</h4>
+                            <p>حجز موعد عن بعد عن طريق مكالمة فيديو</p>
+                        </div>
+                    </div>
+
+                    <div class="option teal">
+                        <span class="option-arrow">‹</span>
+                        <div class="option-info">
+                            <h4><span>🏨</span> مواعيد القطاع الخاص</h4>
+                            <p>حجز مواعيد في أحد المنشآت الخاصة</p>
+                        </div>
+                    </div>
+
+                    <div class="option orange" onclick="go('rooms')">
+                        <span class="new-badge">جديد</span>
+                        <span class="option-arrow">‹</span>
+                        <div class="option-info">
+                            <h4><span>👥</span> غرف التأهيل الجماعية</h4>
+                            <p>انضم لجلسات تأهيل جماعية مع أخصائيين معتمدين</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rooms -->
+            <div class="screen" id="s-rooms">
+                <div class="page-head">
+                    <span class="back" onclick="go('appt')">›</span>
+                    <span class="page-title">غرف التأهيل الجماعية</span>
+                </div>
+
+                <div class="rooms">
+                    <div class="room">
+                        <div class="room-top">
+                            <span class="badge live">● مباشر</span>
+                            <div class="room-info">
+                                <h4>جلسة تأهيل الأطراف العلوية</h4>
+                                <p>د. سارة الأحمد - أخصائية علاج طبيعي</p>
+                            </div>
+                        </div>
+                        <div class="room-meta">
+                            <div class="meta">
+                                <span>٦ مشاركين</span>
+                                <span class="em">👥</span>
+                            </div>
+                            <div class="meta">
+                                <span>٤٥ دقيقة</span>
+                                <span class="em">⏱️</span>
+                            </div>
+                        </div>
+                        <div class="room-bottom">
+                            <button class="join" onclick="openSession()">انضم الآن</button>
+                            <div class="avatars">
+                                <div class="av more">+٣</div>
+                                <div class="av">ع</div>
+                                <div class="av">م</div>
+                                <div class="av">س</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="room">
+                        <div class="room-top">
+                            <span class="badge live">● مباشر</span>
+                            <div class="room-info">
+                                <h4>تمارين تقوية العضلات</h4>
+                                <p>د. خالد العمري - أخصائي تأهيل</p>
+                            </div>
+                        </div>
+                        <div class="room-meta">
+                            <div class="meta">
+                                <span>٤ مشاركين</span>
+                                <span class="em">👥</span>
+                            </div>
+                            <div class="meta">
+                                <span>٣٠ دقيقة</span>
+                                <span class="em">⏱️</span>
+                            </div>
+                        </div>
+                        <div class="room-bottom">
+                            <button class="join" onclick="openSession()">انضم الآن</button>
+                            <div class="avatars">
+                                <div class="av more">+٢</div>
+                                <div class="av">ن</div>
+                                <div class="av">ف</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="room">
+                        <div class="room-top">
+                            <span class="badge later">٢:٠٠ م</span>
+                            <div class="room-info">
+                                <h4>جلسة تأهيل ما بعد الجلطة</h4>
+                                <p>د. منى السالم - أخصائية تأهيل عصبي</p>
+                            </div>
+                        </div>
+                        <div class="room-meta">
+                            <div class="meta">
+                                <span>٨ مسجلين</span>
+                                <span class="em">👥</span>
+                            </div>
+                            <div class="meta">
+                                <span>٦٠ دقيقة</span>
+                                <span class="em">⏱️</span>
+                            </div>
+                        </div>
+                        <div class="room-bottom">
+                            <button class="join gray">تذكير</button>
+                            <div class="avatars">
+                                <div class="av more">+٥</div>
+                                <div class="av">ه</div>
+                                <div class="av">أ</div>
+                                <div class="av">ر</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <div class="nav" id="navbar">
+            <div class="nav-btn" onclick="go('home')" id="n-profile">
+                <span class="icon">👤</span>
+                <span class="text">ملفي</span>
+            </div>
+            <div class="nav-btn" onclick="go('home')" id="n-life">
+                <span class="icon">🌿</span>
+                <span class="text">جودة الحياة</span>
+            </div>
+            <div class="nav-btn" onclick="go('appt')" id="n-appt">
+                <span class="icon">📅</span>
+                <span class="text">المواعيد</span>
+            </div>
+            <div class="nav-btn active" onclick="go('home')" id="n-home">
+                <span class="icon">🏠</span>
+                <span class="text">الرئيسية</span>
+            </div>
+        </div>
+
+        <!-- Session -->
+        <div class="session" id="session">
+            <div class="session-head">
+                <span class="session-back" onclick="closeSession()">›</span>
+                <span class="session-title">جلسة تأهيل الأطراف العلوية</span>
+                <div class="timer">
+                    <span class="timer-dot"></span>
+                    <span>٣٢:١٥</span>
+                </div>
+            </div>
+
+            <div class="videos">
+                <div class="video main">
+                    <div class="video-avatar">👩‍⚕️</div>
+                    <span class="video-name">د. سارة الأحمد</span>
+                </div>
+                <div class="video">
+                    <div class="video-avatar">👤</div>
+                    <span class="video-name">محمد أ.</span>
+                </div>
+                <div class="video">
+                    <div class="video-avatar">👤</div>
+                    <span class="video-name">سعد ع.</span>
+                    <div class="muted">🔇</div>
+                </div>
+                <div class="video">
+                    <div class="video-avatar">👤</div>
+                    <span class="video-name">فاطمة م.</span>
+                    <div class="warning">
+                        <span>⚠️</span>
+                        <span>حركة خاطئة</span>
+                    </div>
+                </div>
+                <div class="video">
+                    <div class="video-avatar">👤</div>
+                    <span class="video-name">عبدالله ر.</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="ctrl-main">
+                    <button class="ctrl on" onclick="this.classList.toggle('on')">🎤</button>
+                    <button class="ctrl" onclick="this.classList.toggle('on')">📹</button>
+                    <button class="ctrl end" onclick="closeSession()">📞</button>
+                    <button class="ctrl" onclick="this.classList.toggle('on')">💬</button>
+                    <button class="ctrl" onclick="this.classList.toggle('on')">✋</button>
+                </div>
+                <div class="ctrl-extra">
+                    <div class="extra">
+                        <div class="extra-icon">📊</div>
+                        <span>تقدمي</span>
+                    </div>
+                    <div class="extra">
+                        <div class="extra-icon">📝</div>
+                        <span>ملاحظات</span>
+                    </div>
+                    <div class="extra">
+                        <div class="extra-icon">⚙️</div>
+                        <span>إعدادات</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function go(p) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            if (p === 'home') {
+                document.getElementById('s-home').classList.add('active');
+                document.getElementById('n-home').classList.add('active');
+            } else if (p === 'appt') {
+                document.getElementById('s-appt').classList.add('active');
+                document.getElementById('n-appt').classList.add('active');
+            } else if (p === 'rooms') {
+                document.getElementById('s-rooms').classList.add('active');
+                document.getElementById('n-appt').classList.add('active');
+            }
+        }
+
+        function openSession() {
+            document.getElementById('session').classList.add('active');
+            document.getElementById('navbar').style.display = 'none';
+        }
+
+        function closeSession() {
+            document.getElementById('session').classList.remove('active');
+            document.getElementById('navbar').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
