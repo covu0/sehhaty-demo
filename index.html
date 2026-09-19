@@ -1,1722 +1,793 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0a0a0a">
-    <title>صحتي - غرف التأهيل</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --bg: #0a0a0a;
-            --bg2: #141414;
-            --card: #1a1a1a;
-            --blue: #4fc3f7;
-            --teal: #26c6da;
-            --white: #ffffff;
-            --gray: #a0a0a0;
-            --muted: #666;
-            --border: #282828;
-            --orange: #ffa726;
-            --red: #ef5350;
-            --green: #66bb6a;
-        }
-
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Tajawal', sans-serif;
-            background: var(--bg);
-            color: var(--white);
-        }
-
-        .app {
-            height: 100%;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .screens {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow-y: auto;
-            background: var(--bg);
-            display: none;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .screen.active { display: block; }
-
-        /* Status Bar */
-        .status {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 20px;
-            padding-top: max(15px, env(safe-area-inset-top));
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .status-icons {
-            display: flex;
-            gap: 6px;
-        }
-
-        /* Header */
-        .header {
-            padding: 10px 20px 20px;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .logo {
-            font-size: 38px;
-            color: var(--blue);
-        }
-
-        .header-icons {
-            display: flex;
-            gap: 20px;
-            font-size: 24px;
-            color: var(--gray);
-        }
-
-        .greeting {
-            text-align: right;
-            margin-bottom: 20px;
-        }
-
-        .greeting h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .greeting p {
-            font-size: 16px;
-            color: var(--gray);
-        }
-
-        .search {
-            display: flex;
-            align-items: center;
-            background: var(--card);
-            border-radius: 14px;
-            padding: 16px 18px;
-            gap: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .search input {
-            flex: 1;
-            background: none;
-            border: none;
-            color: var(--gray);
-            font-family: inherit;
-            font-size: 16px;
-            text-align: right;
-            outline: none;
-        }
-
-        .search input::placeholder { color: var(--muted); }
-        .search-icon { font-size: 22px; color: var(--blue); }
-
-        /* Banner */
-        .banner {
-            margin: 20px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #00838f 100%);
-            padding: 22px;
-            position: relative;
-            min-height: 125px;
-            display: flex;
-            align-items: center;
-        }
-
-        .banner-content {
-            flex: 1;
-            padding-left: 70px;
-        }
-
-        .banner-tag {
-            background: rgba(255,255,255,0.2);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-        .banner p { font-size: 14px; opacity: 0.85; }
-
-        .banner-emoji {
-            position: absolute;
-            left: 22px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 55px;
-        }
-
-        .dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin: 18px 0;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--muted);
-        }
-
-        .dot.active { background: var(--blue); }
-
-        /* Section */
-        .section { padding: 0 20px 25px; }
-        .section-head { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .section-title { font-size: 18px; font-weight: 700; }
-        .section-link { font-size: 14px; color: var(--blue); }
-
-        .activity {
-            background: var(--card);
-            border-radius: 18px;
-            padding: 25px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .activity h4 { font-size: 16px; color: var(--gray); font-weight: 500; margin-bottom: 12px; }
-        .activity p { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 20px; }
-
-        .btn {
-            background: linear-gradient(135deg, #29b6f6 0%, #26c6da 100%);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-family: inherit;
-            font-size: 16px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-        }
-
-        .btn:active { opacity: 0.9; transform: scale(0.99); }
-
-        .quick-items {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding: 5px 0;
-        }
-
-        .quick-items::-webkit-scrollbar { display: none; }
-
-        .quick-item {
-            min-width: 110px;
-            background: var(--card);
-            border-radius: 16px;
-            padding: 18px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .quick-item-icon {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 12px;
-            background: var(--bg2);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .quick-item span { font-size: 13px; color: var(--gray); }
-
-        /* Bottom Nav */
-        .nav {
-            background: var(--bg2);
-            display: flex;
-            justify-content: space-around;
-            padding: 14px 10px;
-            padding-bottom: max(14px, env(safe-area-inset-bottom));
-            border-top: 1px solid var(--border);
-        }
-
-        .nav-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 18px;
-            border-radius: 16px;
-            cursor: pointer;
-        }
-
-        .nav-btn.active { background: rgba(79,195,247,0.12); }
-        .nav-btn .icon { font-size: 28px; color: var(--muted); }
-        .nav-btn.active .icon { color: var(--blue); }
-        .nav-btn .text { font-size: 12px; color: var(--muted); font-weight: 500; }
-        .nav-btn.active .text { color: var(--blue); }
-
-        /* Page Header */
-        .page-head {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            padding-top: max(20px, env(safe-area-inset-top));
-            position: relative;
-        }
-
-        .back {
-            position: absolute;
-            right: 18px;
-            font-size: 34px;
-            color: var(--white);
-            cursor: pointer;
-            padding: 5px 10px;
-        }
-
-        .page-title { font-size: 20px; font-weight: 700; }
-
-        /* Options */
-        .options { padding: 15px 20px; }
-
-        .option {
-            background: var(--card);
-            border-radius: 18px;
-            padding: 22px;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            border: 1px solid var(--border);
-            cursor: pointer;
-        }
-
-        .option:active { background: var(--bg2); }
-        .option.teal { background: rgba(38,198,218,0.08); border-color: var(--teal); }
-        .option.orange { background: rgba(255,167,38,0.1); border-color: var(--orange); position: relative; }
-
-        .new-badge {
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: var(--orange);
-            color: #000;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 5px 14px;
-            border-radius: 14px;
-        }
-
-        .option-arrow { font-size: 24px; color: var(--muted); margin-left: 15px; }
-
-        .option-info { flex: 1; text-align: right; }
-        .option-info h4 {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .option-info p { font-size: 14px; color: var(--gray); line-height: 1.6; }
-
-        /* Rooms */
-        .rooms { padding: 15px 20px; }
-
-        .room {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 18px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-        }
-
-        .room:active { background: var(--bg2); }
-
-        .room-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-
-        .room-info { flex: 1; text-align: right; }
-        .room-info h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-        .room-info p { font-size: 14px; color: var(--gray); }
-
-        .badge {
-            padding: 7px 16px;
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .badge.live { background: rgba(102,187,106,0.15); color: var(--green); }
-        .badge.later { background: rgba(255,167,38,0.15); color: var(--orange); }
-
-        .room-meta {
-            display: flex;
-            gap: 25px;
-            margin-bottom: 18px;
-            justify-content: flex-end;
-        }
-
-        .meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: var(--gray);
-        }
-
-        .meta .em { color: var(--blue); }
-
-        .room-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .avatars { display: flex; flex-direction: row-reverse; }
-
-        .av {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 3px solid var(--card);
-            margin-right: -10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .av:nth-child(1) { background: #5c6bc0; }
-        .av:nth-child(2) { background: #26a69a; }
-        .av:nth-child(3) { background: #ffa726; }
-        .av.more { background: var(--bg2); color: var(--muted); font-size: 12px; }
-
-        .join {
-            background: linear-gradient(135deg, #29b6f6 0%, #26c6da 100%);
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 14px;
-            font-family: inherit;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .join:active { transform: scale(0.97); }
-        .join.gray { background: var(--bg2); color: var(--gray); }
-
-        /* ===== SESSION OVERLAY ===== */
-        .session-overlay {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-        }
-
-        .session-overlay.active { display: flex; }
-
-        .session-head {
-            padding: 15px 20px;
-            padding-top: max(15px, env(safe-area-inset-top));
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 10;
-        }
-
-        .session-back {
-            font-size: 32px;
-            color: white;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .session-title {
-            font-size: 15px;
-            font-weight: 600;
-            text-align: center;
-            flex: 1;
-        }
-
-        .timer {
-            background: var(--red);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .timer-dot {
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink { 50% { opacity: 0.3; } }
-
-        /* Camera Area */
-        .camera-area {
-            flex: 1;
-            position: relative;
-            background: #0d0d0d;
-        }
-
-        #video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-
-        #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform: scaleX(-1);
-            pointer-events: none;
-        }
-
-        /* Demo Overlay - Skeleton Animation */
-        .demo-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-        }
-
-        .demo-overlay.hidden { display: none; }
-
-        .demo-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--blue);
-        }
-
-        .demo-subtitle {
-            font-size: 14px;
-            color: var(--gray);
-            margin-bottom: 30px;
-        }
-
-        .skeleton-demo {
-            width: 200px;
-            height: 280px;
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        .skeleton-demo svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .demo-instruction {
-            background: rgba(79,195,247,0.15);
-            border: 1px solid var(--blue);
-            border-radius: 12px;
-            padding: 15px 25px;
-            text-align: center;
-            margin-bottom: 25px;
-            max-width: 280px;
-        }
-
-        .demo-instruction p {
-            font-size: 14px;
-            line-height: 1.7;
-            color: var(--white);
-        }
-
-        .start-exercise-btn {
-            background: linear-gradient(135deg, #29b6f6 0%, #26c6da 100%);
-            color: white;
-            border: none;
-            padding: 18px 50px;
-            border-radius: 16px;
-            font-family: inherit;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .start-exercise-btn:active { transform: scale(0.97); }
-
-        /* Accuracy Badge */
-        .accuracy-badge {
-            position: absolute;
-            top: 80px;
-            left: 15px;
-            background: rgba(0,0,0,0.8);
-            border-radius: 10px;
-            padding: 8px 12px;
-            font-size: 11px;
-            color: var(--green);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .accuracy-badge.hidden { display: none; }
-
-        /* Angle Display */
-        .angle-display {
-            position: absolute;
-            top: 80px;
-            right: 15px;
-            background: rgba(0,0,0,0.85);
-            border-radius: 16px;
-            padding: 15px 20px;
-            text-align: center;
-            display: none;
-        }
-
-        .angle-display.show { display: block; }
-
-        .angle-label { font-size: 12px; color: var(--gray); margin-bottom: 5px; }
-        .angle-value { font-size: 42px; font-weight: 800; color: var(--blue); }
-        .angle-unit { font-size: 18px; color: var(--gray); }
-
-        /* Target Angle */
-        .target-display {
-            position: absolute;
-            top: 170px;
-            right: 15px;
-            background: rgba(102,187,106,0.2);
-            border: 1px solid var(--green);
-            border-radius: 10px;
-            padding: 8px 12px;
-            font-size: 12px;
-            display: none;
-        }
-
-        .target-display.show { display: block; }
-
-        /* Status Feedback */
-        .status-feedback {
-            position: absolute;
-            bottom: 200px;
-            left: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.9);
-            border-radius: 16px;
-            padding: 15px 20px;
-            display: none;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .status-feedback.show { display: flex; }
-
-        .status-icon {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            flex-shrink: 0;
-        }
-
-        .status-icon.correct { background: rgba(102,187,106,0.2); border: 3px solid var(--green); }
-        .status-icon.wrong { background: rgba(239,83,80,0.2); border: 3px solid var(--red); }
-        .status-icon.neutral { background: rgba(255,167,38,0.2); border: 3px solid var(--orange); }
-
-        .status-text h4 { font-size: 16px; margin-bottom: 4px; }
-        .status-text p { font-size: 13px; color: var(--gray); }
-
-        /* Controls */
-        .session-controls {
-            background: rgba(0,0,0,0.97);
-            padding: 15px 20px;
-            padding-bottom: max(15px, env(safe-area-inset-bottom));
-        }
-
-        .exercise-info {
-            text-align: center;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #333;
-        }
-
-        .exercise-info h3 { font-size: 16px; margin-bottom: 5px; }
-        .exercise-info p { font-size: 13px; color: var(--gray); }
-
-        .progress-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 12px;
-        }
-
-        .progress-bar {
-            flex: 1;
-            height: 10px;
-            background: #333;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--blue), var(--green));
-            border-radius: 10px;
-            transition: width 0.3s;
-            width: 0%;
-        }
-
-        .rep-count {
-            font-size: 14px;
-            color: var(--gray);
-            white-space: nowrap;
-        }
-
-        .rep-count span { color: var(--blue); font-weight: 700; }
-
-        .ctrl-btns {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .ctrl {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255,255,255,0.12);
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .ctrl:active { transform: scale(0.92); }
-        .ctrl.on { background: var(--blue); }
-        .ctrl.end { background: var(--red); width: 56px; height: 56px; }
-
-        /* Exercise Selector */
-        .exercise-selector {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg);
-            border-radius: 24px 24px 0 0;
-            padding: 25px 20px;
-            padding-bottom: max(25px, env(safe-area-inset-bottom));
-            transform: translateY(100%);
-            transition: transform 0.3s;
-            z-index: 20;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .exercise-selector.show { transform: translateY(0); }
-        .exercise-selector h3 { font-size: 18px; margin-bottom: 20px; text-align: center; }
-
-        .exercise-option {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .exercise-option:active { background: var(--bg2); }
-        .exercise-option.active { border-color: var(--blue); background: rgba(79,195,247,0.1); }
-        .exercise-option .ex-icon { font-size: 32px; }
-        .exercise-option .ex-info { flex: 1; text-align: right; }
-        .exercise-option .ex-info h4 { font-size: 16px; margin-bottom: 4px; }
-        .exercise-option .ex-info p { font-size: 13px; color: var(--gray); }
-
-        .close-selector {
-            background: var(--card);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-family: inherit;
-            font-size: 16px;
-            width: 100%;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        /* Loading */
-        .loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            z-index: 2000;
-        }
-
-        .loading-overlay.show { display: flex; }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #333;
-            border-top-color: var(--blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .loading-overlay p { font-size: 16px; color: var(--gray); text-align: center; }
-
-        /* Skeleton Animation Keyframes */
-        @keyframes armRaise {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(-90deg); }
-        }
-
-        @keyframes elbowFlex {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(-50deg); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0a">
+<title>صحتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--blue:#4fc3f7;--teal:#26c6da;
+--white:#fff;--gray:#a0a0a0;--muted:#666;--border:#282828;
+--orange:#ffa726;--red:#ef5350;--green:#66bb6a;
+}
+html,body{height:100%;overflow:hidden;font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--white)}
+.app{height:100%;width:100%;display:flex;flex-direction:column}
+.screens{flex:1;overflow:hidden;position:relative}
+.screen{position:absolute;inset:0;overflow-y:auto;background:var(--bg);display:none;-webkit-overflow-scrolling:touch}
+.screen.active{display:block}
+
+.status{display:flex;justify-content:space-between;padding:15px 20px;padding-top:max(15px,env(safe-area-inset-top));font-size:14px;font-weight:600}
+.status-icons{display:flex;gap:6px}
+.header{padding:10px 20px 20px}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.logo{font-size:38px;color:var(--blue)}
+.header-icons{display:flex;gap:20px;font-size:24px;color:var(--gray)}
+.greeting{text-align:right;margin-bottom:20px}
+.greeting h1{font-size:28px;font-weight:700;margin-bottom:8px}
+.greeting p{font-size:16px;color:var(--gray)}
+.search{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:16px 18px;gap:12px;border:1px solid var(--border)}
+.search input{flex:1;background:none;border:none;color:var(--gray);font-family:inherit;font-size:16px;text-align:right;outline:none}
+.search input::placeholder{color:var(--muted)}
+.search-icon{font-size:22px;color:var(--blue)}
+.banner{margin:20px;border-radius:18px;background:linear-gradient(135deg,#1a237e,#0d47a1 50%,#00838f);padding:22px;position:relative;min-height:125px;display:flex;align-items:center}
+.banner-content{flex:1;padding-left:70px}
+.banner-tag{background:rgba(255,255,255,.2);padding:6px 14px;border-radius:20px;font-size:12px;display:inline-block;margin-bottom:12px}
+.banner h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.banner p{font-size:14px;opacity:.85}
+.banner-emoji{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:55px}
+.dots{display:flex;justify-content:center;gap:8px;margin:18px 0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.active{background:var(--blue)}
+.section{padding:0 20px 25px}
+.section-head{display:flex;justify-content:space-between;margin-bottom:15px}
+.section-title{font-size:18px;font-weight:700}
+.section-link{font-size:14px;color:var(--blue)}
+.activity{background:var(--card);border-radius:18px;padding:25px;text-align:center;border:1px solid var(--border)}
+.activity h4{font-size:16px;color:var(--gray);font-weight:500;margin-bottom:12px}
+.activity p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:20px}
+.btn{background:linear-gradient(135deg,#29b6f6,#26c6da);color:#fff;border:none;padding:16px;border-radius:14px;font-family:inherit;font-size:16px;font-weight:600;width:100%;cursor:pointer}
+.quick-items{display:flex;gap:12px;overflow-x:auto;padding:5px 0}
+.quick-items::-webkit-scrollbar{display:none}
+.quick-item{min-width:110px;background:var(--card);border-radius:16px;padding:18px;text-align:center;border:1px solid var(--border)}
+.quick-item-icon{width:48px;height:48px;margin:0 auto 12px;background:var(--bg2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.quick-item span{font-size:13px;color:var(--gray)}
+
+.nav{background:var(--bg2);display:flex;justify-content:space-around;padding:14px 10px;padding-bottom:max(14px,env(safe-area-inset-bottom));border-top:1px solid var(--border)}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 18px;border-radius:16px;cursor:pointer}
+.nav-btn.active{background:rgba(79,195,247,.12)}
+.nav-btn .icon{font-size:28px;color:var(--muted)}
+.nav-btn.active .icon{color:var(--blue)}
+.nav-btn .text{font-size:12px;color:var(--muted);font-weight:500}
+.nav-btn.active .text{color:var(--blue)}
+
+.page-head{display:flex;align-items:center;justify-content:center;padding:20px;padding-top:max(20px,env(safe-area-inset-top));position:relative}
+.back{position:absolute;right:18px;font-size:34px;cursor:pointer;padding:5px 10px}
+.page-title{font-size:20px;font-weight:700}
+
+.options{padding:15px 20px}
+.option{background:var(--card);border-radius:18px;padding:22px;margin-bottom:14px;display:flex;align-items:center;border:1px solid var(--border);cursor:pointer}
+.option:active{background:var(--bg2)}
+.option.teal{background:rgba(38,198,218,.08);border-color:var(--teal)}
+.option.orange{background:rgba(255,167,38,.1);border-color:var(--orange);position:relative}
+.new-badge{position:absolute;top:-12px;left:20px;background:var(--orange);color:#000;font-size:12px;font-weight:700;padding:5px 14px;border-radius:14px}
+.option-arrow{font-size:24px;color:var(--muted);margin-left:15px}
+.option-info{flex:1;text-align:right}
+.option-info h4{font-size:17px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:flex-end;gap:10px}
+.option-info p{font-size:14px;color:var(--gray);line-height:1.6}
+.qudra-name{font-weight:800;letter-spacing:.3px}
+.qudra-en{font-size:13px;color:var(--orange);font-weight:600}
+
+.rooms{padding:15px 20px}
+.room{background:var(--card);border-radius:20px;padding:22px;margin-bottom:18px;border:1px solid var(--border);cursor:pointer}
+.room:active{background:var(--bg2)}
+.room-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:10px}
+.room-info{flex:1;text-align:right}
+.room-info h4{font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.5}
+.room-info p{font-size:14px;color:var(--gray)}
+.badge{padding:7px 14px;border-radius:25px;font-size:13px;font-weight:600;white-space:nowrap}
+.badge.live{background:rgba(102,187,106,.15);color:var(--green)}
+.room-meta{display:flex;gap:25px;margin-bottom:18px;justify-content:flex-end}
+.meta{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--gray)}
+.meta .em{color:var(--blue)}
+.room-bottom{display:flex;justify-content:space-between;align-items:center}
+.avatars{display:flex;flex-direction:row-reverse}
+.av{width:36px;height:36px;border-radius:50%;border:3px solid var(--card);margin-right:-10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff}
+.av:nth-child(1){background:#5c6bc0}.av:nth-child(2){background:#26a69a}.av:nth-child(3){background:#ffa726}
+.av.more{background:var(--bg2);color:var(--muted);font-size:12px}
+.join{background:linear-gradient(135deg,#29b6f6,#26c6da);color:#fff;border:none;padding:14px 30px;border-radius:14px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+
+/* SESSION */
+.session-overlay{position:fixed;inset:0;background:#000;z-index:1000;display:none;flex-direction:column}
+.session-overlay.active{display:flex}
+.session-head{padding:15px 20px;padding-top:max(15px,env(safe-area-inset-top));background:rgba(0,0,0,.95);display:flex;justify-content:space-between;align-items:center;position:absolute;top:0;left:0;right:0;z-index:15}
+.session-back{font-size:32px;color:#fff;cursor:pointer;padding:8px}
+.session-title{font-size:14px;font-weight:600;text-align:center;flex:1}
+.timer{background:var(--red);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.timer-dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.3}}
+
+.camera-area{flex:1;position:relative;background:#0d0d0d;overflow:hidden}
+#video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#canvas{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);pointer-events:none}
+
+.demo-overlay{position:absolute;inset:0;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;padding:70px 20px 20px;overflow-y:auto}
+.demo-overlay.hidden{display:none}
+.demo-title{font-size:20px;font-weight:700;margin-bottom:4px;color:var(--blue);text-align:center}
+.demo-sub{font-size:13px;color:var(--gray);margin-bottom:12px}
+#demoCanvas{width:230px;height:300px;max-height:38vh}
+.demo-target{background:rgba(102,187,106,.12);border:1px solid var(--green);color:var(--green);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;margin-bottom:12px}
+.demo-instruction{background:rgba(79,195,247,.12);border:1px solid rgba(79,195,247,.5);border-radius:12px;padding:14px 18px;text-align:center;margin-bottom:18px;max-width:320px}
+.demo-instruction p{font-size:14px;line-height:1.7}
+.start-exercise-btn{background:linear-gradient(135deg,#29b6f6,#26c6da);color:#fff;border:none;padding:16px 45px;border-radius:16px;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer}
+
+.metric-box{position:absolute;top:75px;right:15px;background:rgba(0,0,0,.85);border-radius:16px;padding:12px 18px;text-align:center;display:none;z-index:8}
+.metric-box.show{display:block}
+.metric-label{font-size:11px;color:var(--gray);margin-bottom:2px}
+.metric-value{font-size:38px;font-weight:800;color:var(--blue);line-height:1.1}
+.metric-unit{font-size:16px;color:var(--gray)}
+.target-box{position:absolute;top:75px;left:15px;background:rgba(102,187,106,.18);border:1px solid var(--green);border-radius:10px;padding:8px 12px;font-size:11px;max-width:140px;display:none;z-index:8;line-height:1.5}
+.target-box.show{display:block}
+.target-box b{display:block;color:var(--green);font-size:12px}
+
+.status-feedback{position:absolute;bottom:15px;left:15px;right:15px;background:rgba(0,0,0,.9);border-radius:16px;padding:14px 18px;display:none;align-items:center;gap:14px;z-index:8}
+.status-feedback.show{display:flex}
+.status-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.status-icon.correct{background:rgba(102,187,106,.2);border:3px solid var(--green)}
+.status-icon.wrong{background:rgba(239,83,80,.2);border:3px solid var(--red)}
+.status-icon.neutral{background:rgba(255,167,38,.2);border:3px solid var(--orange)}
+.status-text h4{font-size:16px;margin-bottom:3px}
+.status-text p{font-size:13px;color:var(--gray)}
+
+.session-controls{background:rgba(0,0,0,.97);padding:14px 20px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
+.exercise-info{text-align:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #333}
+.exercise-info h3{font-size:16px;margin-bottom:4px}
+.exercise-info p{font-size:12px;color:var(--gray)}
+.progress-row{display:flex;align-items:center;gap:15px;margin-bottom:12px}
+.progress-bar{flex:1;height:10px;background:#333;border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:10px;transition:width .3s;width:0}
+.rep-count{font-size:13px;color:var(--gray);white-space:nowrap}
+.rep-count span{color:var(--blue);font-weight:700}
+.ctrl-btns{display:flex;justify-content:center;gap:12px}
+.ctrl{width:50px;height:50px;border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ctrl.on{background:var(--blue)}
+.ctrl.end{background:var(--red);width:56px;height:56px}
+
+.exercise-selector{position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:24px 24px 0 0;padding:25px 20px;padding-bottom:max(25px,env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .3s;z-index:20;max-height:75vh;overflow-y:auto}
+.exercise-selector.show{transform:translateY(0)}
+.exercise-selector h3{font-size:18px;margin-bottom:18px;text-align:center}
+.exercise-option{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;gap:15px}
+.exercise-option.active{border-color:var(--blue);background:rgba(79,195,247,.1)}
+.exercise-option .ex-icon{font-size:30px}
+.exercise-option .ex-info{flex:1;text-align:right}
+.exercise-option .ex-info h4{font-size:15px;margin-bottom:4px}
+.exercise-option .ex-info p{font-size:12px;color:var(--gray)}
+.close-selector{background:var(--card);color:#fff;border:none;padding:16px;border-radius:14px;font-family:inherit;font-size:16px;width:100%;margin-top:6px;cursor:pointer}
+
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:2000}
+.loading-overlay.show{display:flex}
+.spinner{width:50px;height:50px;border:4px solid #333;border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay p{font-size:16px;color:var(--gray);text-align:center}
+</style>
 </head>
 <body>
-    <div class="app">
-        <div class="screens">
-            <!-- HOME SCREEN -->
-            <div class="screen active" id="s-home">
-                <div class="status">
-                    <span>٦:٣٥</span>
-                    <div class="status-icons">
-                        <span>⚡</span>
-                        <span>📶</span>
-                        <span>🔋</span>
-                    </div>
-                </div>
+<div class="app">
+<div class="screens">
 
-                <div class="header">
-                    <div class="header-top">
-                        <div class="header-icons">
-                            <span>☰</span>
-                            <span>🔔</span>
-                            <span>🎧</span>
-                        </div>
-                        <div class="logo">✓</div>
-                    </div>
+<!-- HOME -->
+<div class="screen active" id="s-home">
+  <div class="status"><span>٦:٣٥</span><div class="status-icons"><span>⚡</span><span>📶</span><span>🔋</span></div></div>
+  <div class="header">
+    <div class="header-top"><div class="header-icons"><span>☰</span><span>🔔</span><span>🎧</span></div><div class="logo">✓</div></div>
+    <div class="greeting"><h1>مرحباً، محمد</h1><p>كيف حال صحتك اليوم؟</p></div>
+    <div class="search"><input type="text" placeholder="ابحث عن أي شيء، مثال: فحص"><span class="search-icon">🔍</span></div>
+  </div>
+  <div class="banner">
+    <div class="banner-content"><span class="banner-tag">الحملة الوطنية للتطعيم</span><h3>لقاح الإنفلونزا الموسمية</h3><p>احجز موعدك السنوية واحفظها الآن</p></div>
+    <span class="banner-emoji">💉</span>
+  </div>
+  <div class="dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+  <div class="section">
+    <div class="section-head"><span class="section-title">نشاطك اليومي</span></div>
+    <div class="activity"><h4>لم يتم الربط حتى الآن</h4><p>السماح بالوصول الى تطبيق Health الخاص بك لمتابعة نشاطك الصحي</p><button class="btn">اضغط للسماح</button></div>
+  </div>
+  <div class="section">
+    <div class="section-head"><span class="section-title">آخر مستجداتك</span><span class="section-link">عرض الكل ←</span></div>
+    <div class="quick-items">
+      <div class="quick-item"><div class="quick-item-icon">📅</div><span>الأحداث</span></div>
+      <div class="quick-item"><div class="quick-item-icon">💳</div><span>بطاقات التأمين</span></div>
+      <div class="quick-item"><div class="quick-item-icon">🔬</div><span>بدء الفحوصات</span></div>
+    </div>
+  </div>
+  <div style="height:60px"></div>
+</div>
 
-                    <div class="greeting">
-                        <h1>مرحباً، محمد</h1>
-                        <p>كيف حال صحتك اليوم؟</p>
-                    </div>
+<!-- APPOINTMENTS -->
+<div class="screen" id="s-appt">
+  <div class="page-head"><span class="back" onclick="go('home')">›</span><span class="page-title">نوع الموعد</span></div>
+  <div class="options">
+    <div class="option"><span class="option-arrow">‹</span><div class="option-info"><h4><span>⏱️</span> استشارة فورية</h4><p>تحدث مع طبيب الآن بدون أي حجز مسبق</p></div></div>
+    <div class="option"><span class="option-arrow">‹</span><div class="option-info"><h4><span>🏥</span> موعد حضوري</h4><p>حجز موعد حضوري في أحد المنشآت التابعة</p></div></div>
+    <div class="option"><span class="option-arrow">‹</span><div class="option-info"><h4><span>📱</span> موعد افتراضي</h4><p>حجز موعد عن بعد عن طريق مكالمة فيديو</p></div></div>
+    <div class="option teal"><span class="option-arrow">‹</span><div class="option-info"><h4><span>🏨</span> مواعيد القطاع الخاص</h4><p>حجز مواعيد في أحد المنشآت الخاصة</p></div></div>
+    <div class="option orange" onclick="go('rooms')">
+      <span class="new-badge">جديد</span><span class="option-arrow">‹</span>
+      <div class="option-info">
+        <h4><span>👥</span> <span class="qudra-name">قُدرة</span> <span class="qudra-en">| Qudra</span></h4>
+        <p>انضم لجلسات تأهيل جماعية مع أخصائيين معتمدين</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-                    <div class="search">
-                        <input type="text" placeholder="ابحث عن أي شيء، مثال: فحص">
-                        <span class="search-icon">🔍</span>
-                    </div>
-                </div>
+<!-- ROOMS -->
+<div class="screen" id="s-rooms">
+  <div class="page-head"><span class="back" onclick="go('appt')">›</span><span class="page-title">غرف التأهيل الجماعية</span></div>
+  <div class="rooms" id="roomsList"></div>
+</div>
 
-                <div class="banner">
-                    <div class="banner-content">
-                        <span class="banner-tag">الحملة الوطنية للتطعيم</span>
-                        <h3>لقاح الإنفلونزا الموسمية</h3>
-                        <p>احجز موعدك السنوية واحفظها الآن</p>
-                    </div>
-                    <span class="banner-emoji">💉</span>
-                </div>
+</div>
 
-                <div class="dots">
-                    <span class="dot active"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                </div>
+<!-- NAV -->
+<div class="nav" id="navbar">
+  <div class="nav-btn" onclick="go('home')"><span class="icon">👤</span><span class="text">ملفي</span></div>
+  <div class="nav-btn" onclick="go('home')"><span class="icon">🌿</span><span class="text">جودة الحياة</span></div>
+  <div class="nav-btn" onclick="go('appt')" id="n-appt"><span class="icon">📅</span><span class="text">المواعيد</span></div>
+  <div class="nav-btn active" onclick="go('home')" id="n-home"><span class="icon">🏠</span><span class="text">الرئيسية</span></div>
+</div>
 
-                <div class="section">
-                    <div class="section-head">
-                        <span class="section-title">نشاطك اليومي</span>
-                    </div>
-                    <div class="activity">
-                        <h4>لم يتم الربط حتى الآن</h4>
-                        <p>السماح بالوصول الى تطبيق Health الخاص بك لمتابعة نشاطك الصحي</p>
-                        <button class="btn">اضغط للسماح</button>
-                    </div>
-                </div>
+<!-- SESSION -->
+<div class="session-overlay" id="sessionOverlay">
+  <div class="session-head">
+    <span class="session-back" onclick="closeSession()">›</span>
+    <span class="session-title" id="sessionTitle">جلسة تأهيل</span>
+    <div class="timer"><span class="timer-dot"></span><span id="timerDisplay">00:00</span></div>
+  </div>
 
-                <div class="section">
-                    <div class="section-head">
-                        <span class="section-title">آخر مستجداتك</span>
-                        <span class="section-link">عرض الكل ←</span>
-                    </div>
-                    <div class="quick-items">
-                        <div class="quick-item">
-                            <div class="quick-item-icon">📅</div>
-                            <span>الأحداث</span>
-                        </div>
-                        <div class="quick-item">
-                            <div class="quick-item-icon">💳</div>
-                            <span>بطاقات التأمين</span>
-                        </div>
-                        <div class="quick-item">
-                            <div class="quick-item-icon">🔬</div>
-                            <span>بدء الفحوصات</span>
-                        </div>
-                    </div>
-                </div>
-                <div style="height:80px"></div>
-            </div>
+  <div class="camera-area">
+    <video id="video" playsinline></video>
+    <canvas id="canvas"></canvas>
 
-            <!-- APPOINTMENTS SCREEN -->
-            <div class="screen" id="s-appt">
-                <div class="page-head">
-                    <span class="back" onclick="go('home')">›</span>
-                    <span class="page-title">نوع الموعد</span>
-                </div>
-
-                <div class="options">
-                    <div class="option">
-                        <span class="option-arrow">‹</span>
-                        <div class="option-info">
-                            <h4><span>⏱️</span> استشارة فورية</h4>
-                            <p>تحدث مع طبيب الآن بدون أي حجز مسبق</p>
-                        </div>
-                    </div>
-
-                    <div class="option">
-                        <span class="option-arrow">‹</span>
-                        <div class="option-info">
-                            <h4><span>🏥</span> موعد حضوري</h4>
-                            <p>حجز موعد حضوري في أحد المنشآت التابعة</p>
-                        </div>
-                    </div>
-
-                    <div class="option">
-                        <span class="option-arrow">‹</span>
-                        <div class="option-info">
-                            <h4><span>📱</span> موعد افتراضي</h4>
-                            <p>حجز موعد عن بعد عن طريق مكالمة فيديو</p>
-                        </div>
-                    </div>
-
-                    <div class="option teal">
-                        <span class="option-arrow">‹</span>
-                        <div class="option-info">
-                            <h4><span>🏨</span> مواعيد القطاع الخاص</h4>
-                            <p>حجز مواعيد في أحد المنشآت الخاصة</p>
-                        </div>
-                    </div>
-
-                    <div class="option orange" onclick="go('rooms')">
-                        <span class="new-badge">جديد</span>
-                        <span class="option-arrow">‹</span>
-                        <div class="option-info">
-                            <h4><span>👥</span> غرف التأهيل الجماعية</h4>
-                            <p>انضم لجلسات تأهيل جماعية مع أخصائيين معتمدين</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ROOMS SCREEN -->
-            <div class="screen" id="s-rooms">
-                <div class="page-head">
-                    <span class="back" onclick="go('appt')">›</span>
-                    <span class="page-title">غرف التأهيل الجماعية</span>
-                </div>
-
-                <div class="rooms">
-                    <div class="room" onclick="openSession('upper_limb')">
-                        <div class="room-top">
-                            <span class="badge live">● مباشر</span>
-                            <div class="room-info">
-                                <h4>جلسة تأهيل الأطراف العلوية</h4>
-                                <p>د. سارة الأحمد - أخصائية علاج طبيعي</p>
-                            </div>
-                        </div>
-                        <div class="room-meta">
-                            <div class="meta"><span>٦ مشاركين</span><span class="em">👥</span></div>
-                            <div class="meta"><span>٤٥ دقيقة</span><span class="em">⏱️</span></div>
-                        </div>
-                        <div class="room-bottom">
-                            <button class="join">انضم الآن</button>
-                            <div class="avatars">
-                                <div class="av more">+٣</div>
-                                <div class="av">ع</div>
-                                <div class="av">م</div>
-                                <div class="av">س</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="room" onclick="openSession('muscle_strength')">
-                        <div class="room-top">
-                            <span class="badge live">● مباشر</span>
-                            <div class="room-info">
-                                <h4>تمارين تقوية العضلات</h4>
-                                <p>د. خالد العمري - أخصائي تأهيل</p>
-                            </div>
-                        </div>
-                        <div class="room-meta">
-                            <div class="meta"><span>٤ مشاركين</span><span class="em">👥</span></div>
-                            <div class="meta"><span>٣٠ دقيقة</span><span class="em">⏱️</span></div>
-                        </div>
-                        <div class="room-bottom">
-                            <button class="join">انضم الآن</button>
-                            <div class="avatars">
-                                <div class="av more">+٢</div>
-                                <div class="av">ن</div>
-                                <div class="av">ف</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="room" onclick="openSession('stroke_rehab')">
-                        <div class="room-top">
-                            <span class="badge live">● مباشر</span>
-                            <div class="room-info">
-                                <h4>جلسة تأهيل ما بعد الجلطة</h4>
-                                <p>د. منى السالم - أخصائية تأهيل عصبي</p>
-                            </div>
-                        </div>
-                        <div class="room-meta">
-                            <div class="meta"><span>٨ مشاركين</span><span class="em">👥</span></div>
-                            <div class="meta"><span>٦٠ دقيقة</span><span class="em">⏱️</span></div>
-                        </div>
-                        <div class="room-bottom">
-                            <button class="join">انضم الآن</button>
-                            <div class="avatars">
-                                <div class="av more">+٥</div>
-                                <div class="av">ه</div>
-                                <div class="av">أ</div>
-                                <div class="av">ر</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- BOTTOM NAV -->
-        <div class="nav" id="navbar">
-            <div class="nav-btn" onclick="go('home')">
-                <span class="icon">👤</span>
-                <span class="text">ملفي</span>
-            </div>
-            <div class="nav-btn" onclick="go('home')">
-                <span class="icon">🌿</span>
-                <span class="text">جودة الحياة</span>
-            </div>
-            <div class="nav-btn" onclick="go('appt')" id="n-appt">
-                <span class="icon">📅</span>
-                <span class="text">المواعيد</span>
-            </div>
-            <div class="nav-btn active" onclick="go('home')" id="n-home">
-                <span class="icon">🏠</span>
-                <span class="text">الرئيسية</span>
-            </div>
-        </div>
-
-        <!-- SESSION OVERLAY -->
-        <div class="session-overlay" id="sessionOverlay">
-            <div class="session-head">
-                <span class="session-back" onclick="closeSession()">›</span>
-                <span class="session-title" id="sessionTitle">جلسة تأهيل</span>
-                <div class="timer">
-                    <span class="timer-dot"></span>
-                    <span id="timerDisplay">00:00</span>
-                </div>
-            </div>
-
-            <div class="camera-area">
-                <video id="video" playsinline></video>
-                <canvas id="canvas"></canvas>
-
-                <!-- Demo Overlay with Skeleton -->
-                <div class="demo-overlay" id="demoOverlay">
-                    <div class="demo-title" id="demoTitle">رفع الذراع جانبياً</div>
-                    <div class="demo-subtitle">شاهد التوضيح ثم ابدأ التمرين</div>
-                    
-                    <div class="skeleton-demo">
-                        <svg viewBox="0 0 200 280" id="skeletonSvg">
-                            <!-- Head -->
-                            <circle cx="100" cy="30" r="20" fill="none" stroke="#4fc3f7" stroke-width="3"/>
-                            
-                            <!-- Spine -->
-                            <line x1="100" y1="50" x2="100" y2="150" stroke="#4fc3f7" stroke-width="3"/>
-                            
-                            <!-- Hips -->
-                            <line x1="70" y1="150" x2="130" y2="150" stroke="#4fc3f7" stroke-width="3"/>
-                            
-                            <!-- Left Leg -->
-                            <line x1="70" y1="150" x2="70" y2="220" stroke="#4fc3f7" stroke-width="3"/>
-                            <line x1="70" y1="220" x2="70" y2="270" stroke="#4fc3f7" stroke-width="3"/>
-                            
-                            <!-- Right Leg -->
-                            <line x1="130" y1="150" x2="130" y2="220" stroke="#4fc3f7" stroke-width="3"/>
-                            <line x1="130" y1="220" x2="130" y2="270" stroke="#4fc3f7" stroke-width="3"/>
-                            
-                            <!-- Shoulders -->
-                            <line x1="60" y1="70" x2="140" y2="70" stroke="#4fc3f7" stroke-width="3"/>
-                            
-                            <!-- Left Arm (static) -->
-                            <line x1="60" y1="70" x2="60" y2="120" stroke="#4fc3f7" stroke-width="3"/>
-                            <line x1="60" y1="120" x2="60" y2="160" stroke="#4fc3f7" stroke-width="3"/>
-                            
-                            <!-- Right Arm (animated) -->
-                            <g id="rightArmGroup" style="transform-origin: 140px 70px;">
-                                <line x1="140" y1="70" x2="140" y2="120" stroke="#66bb6a" stroke-width="4" id="rightUpperArm"/>
-                                <line x1="140" y1="120" x2="140" y2="160" stroke="#66bb6a" stroke-width="4" id="rightForearm"/>
-                                <!-- Elbow joint -->
-                                <circle cx="140" cy="120" r="5" fill="#66bb6a"/>
-                                <!-- Hand -->
-                                <circle cx="140" cy="160" r="6" fill="#66bb6a"/>
-                            </g>
-                            
-                            <!-- Joint circles -->
-                            <circle cx="100" cy="70" r="4" fill="#4fc3f7"/>
-                            <circle cx="60" cy="70" r="4" fill="#4fc3f7"/>
-                            <circle cx="140" cy="70" r="5" fill="#66bb6a"/>
-                            <circle cx="70" cy="150" r="4" fill="#4fc3f7"/>
-                            <circle cx="130" cy="150" r="4" fill="#4fc3f7"/>
-                        </svg>
-                    </div>
-                    
-                    <div class="demo-instruction">
-                        <p id="demoInstruction">ارفع ذراعك اليمنى جانبياً حتى تصل لمستوى الكتف (٩٠ درجة)</p>
-                    </div>
-                    
-                    <button class="start-exercise-btn" onclick="startExercise()">
-                        🎯 ابدأ التمرين
-                    </button>
-                </div>
-
-                <!-- Accuracy Badge -->
-                <div class="accuracy-badge hidden" id="accuracyBadge">
-                    <span>🎯</span>
-                    <span>دقة عالية</span>
-                </div>
-
-                <!-- Angle Display -->
-                <div class="angle-display" id="angleDisplay">
-                    <div class="angle-label">زاوية الحركة</div>
-                    <div>
-                        <span class="angle-value" id="angleValue">0</span>
-                        <span class="angle-unit">°</span>
-                    </div>
-                </div>
-
-                <!-- Target Display -->
-                <div class="target-display" id="targetDisplay">
-                    🎯 الهدف: <span id="targetValue">90</span>°
-                </div>
-
-                <!-- Status Feedback -->
-                <div class="status-feedback" id="statusFeedback">
-                    <div class="status-icon neutral" id="statusIcon">🎯</div>
-                    <div class="status-text">
-                        <h4 id="statusTitle">جاهز للبدء</h4>
-                        <p id="statusDesc">ارفع ذراعك ببطء</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="session-controls">
-                <div class="exercise-info">
-                    <h3 id="exerciseName">رفع الذراع جانبياً</h3>
-                    <p id="exerciseTarget">الهدف: ٩٠°</p>
-                </div>
-
-                <div class="progress-row">
-                    <div class="rep-count">التكرارات: <span id="repCount">0</span>/10</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                </div>
-
-                <div class="ctrl-btns">
-                    <button class="ctrl" onclick="toggleSelector()">📋</button>
-                    <button class="ctrl" onclick="showDemo()">🎬</button>
-                    <button class="ctrl end" onclick="closeSession()">✕</button>
-                    <button class="ctrl on" id="camBtn">📹</button>
-                    <button class="ctrl" id="micBtn">🎤</button>
-                </div>
-            </div>
-
-            <!-- Exercise Selector -->
-            <div class="exercise-selector" id="exerciseSelector">
-                <h3>اختر التمرين</h3>
-                <div id="exerciseList"></div>
-                <button class="close-selector" onclick="toggleSelector()">إغلاق</button>
-            </div>
-        </div>
-
-        <!-- Loading -->
-        <div class="loading-overlay" id="loadingOverlay">
-            <div class="spinner"></div>
-            <p>جاري تحميل نموذج الذكاء الاصطناعي...<br><small style="color:#666">دقة عالية</small></p>
-        </div>
+    <div class="demo-overlay" id="demoOverlay">
+      <div class="demo-title" id="demoTitle">—</div>
+      <div class="demo-sub">شاهد التوضيح ثم ابدأ التمرين</div>
+      <canvas id="demoCanvas" width="460" height="600"></canvas>
+      <div class="demo-target" id="demoTarget">—</div>
+      <div class="demo-instruction"><p id="demoInstruction">—</p></div>
+      <button class="start-exercise-btn" onclick="startExercise()">🎯 ابدأ التمرين</button>
     </div>
 
-    <!-- MediaPipe Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3/drawing_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/pose.js" crossorigin="anonymous"></script>
+    <div class="metric-box" id="metricBox">
+      <div class="metric-label" id="metricLabel">الزاوية</div>
+      <div><span class="metric-value" id="metricValue">0</span><span class="metric-unit" id="metricUnit">°</span></div>
+    </div>
 
-    <script>
-        // ===== NAVIGATION =====
-        function go(p) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            if (p === 'home') {
-                document.getElementById('s-home').classList.add('active');
-                document.getElementById('n-home').classList.add('active');
-            } else if (p === 'appt') {
-                document.getElementById('s-appt').classList.add('active');
-                document.getElementById('n-appt').classList.add('active');
-            } else if (p === 'rooms') {
-                document.getElementById('s-rooms').classList.add('active');
-                document.getElementById('n-appt').classList.add('active');
-            }
-        }
+    <div class="target-box" id="targetBox"><b id="targetLabel">المدى الحركي المستهدف</b><span id="targetValue">—</span></div>
 
-        // ===== SESSION DATA =====
-        const sessionTypes = {
-            upper_limb: {
-                title: 'جلسة تأهيل الأطراف العلوية',
-                exercises: ['shoulder_raise', 'elbow_flex', 'shoulder_front']
-            },
-            muscle_strength: {
-                title: 'تمارين تقوية العضلات',
-                exercises: ['shoulder_raise', 'bicep_curl', 'shoulder_press']
-            },
-            stroke_rehab: {
-                title: 'جلسة تأهيل ما بعد الجلطة',
-                exercises: ['passive_stretch', 'elbow_flex_slow', 'wrist_flex']
-            }
-        };
+    <div class="status-feedback" id="statusFeedback">
+      <div class="status-icon neutral" id="statusIcon">🎯</div>
+      <div class="status-text"><h4 id="statusTitle">جاهز</h4><p id="statusDesc">—</p></div>
+    </div>
+  </div>
 
-        const exercises = {
-            shoulder_raise: {
-                name: 'رفع الذراع جانبياً',
-                icon: '💪',
-                target: 90,
-                tolerance: 12,
-                type: 'shoulder_abduction',
-                instruction: 'ارفع ذراعك اليمنى جانبياً حتى تصل لمستوى الكتف (٩٠ درجة)',
-                animation: 'armRaise'
-            },
-            elbow_flex: {
-                name: 'ثني الكوع',
-                icon: '🦾',
-                target: 140,
-                tolerance: 12,
-                type: 'elbow_flexion',
-                instruction: 'اثنِ كوعك لتقريب يدك نحو كتفك حتى زاوية ١٤٠ درجة',
-                animation: 'elbowFlex'
-            },
-            shoulder_front: {
-                name: 'رفع الذراع أمامياً',
-                icon: '🙆',
-                target: 120,
-                tolerance: 12,
-                type: 'shoulder_flexion',
-                instruction: 'ارفع ذراعك أمامك ببطء حتى زاوية ١٢٠ درجة',
-                animation: 'armRaise'
-            },
-            bicep_curl: {
-                name: 'تمرين البايسبس',
-                icon: '💪',
-                target: 145,
-                tolerance: 12,
-                type: 'elbow_flexion',
-                instruction: 'اثنِ كوعك لرفع يدك نحو الكتف مع الحفاظ على ثبات العضد',
-                animation: 'elbowFlex'
-            },
-            shoulder_press: {
-                name: 'الضغط العلوي',
-                icon: '🏋️',
-                target: 170,
-                tolerance: 15,
-                type: 'shoulder_press',
-                instruction: 'ارفع ذراعيك للأعلى فوق رأسك حتى تستقيم تماماً',
-                animation: 'armRaise'
-            },
-            passive_stretch: {
-                name: 'تمديد سلبي للذراع',
-                icon: '🧘',
-                target: 60,
-                tolerance: 20,
-                type: 'shoulder_abduction',
-                instruction: 'استخدم يدك السليمة لرفع الذراع المصابة ببطء وحذر شديد',
-                animation: 'armRaise'
-            },
-            elbow_flex_slow: {
-                name: 'ثني الكوع (بطيء)',
-                icon: '🦾',
-                target: 120,
-                tolerance: 20,
-                type: 'elbow_flexion',
-                instruction: 'اثنِ كوعك ببطء شديد، خذ وقتك ولا تجهد نفسك',
-                animation: 'elbowFlex'
-            },
-            wrist_flex: {
-                name: 'تحريك المعصم',
-                icon: '✋',
-                target: 45,
-                tolerance: 20,
-                type: 'wrist',
-                instruction: 'حرك معصمك للأعلى والأسفل ببطء',
-                animation: 'armRaise'
-            }
-        };
+  <div class="session-controls">
+    <div class="exercise-info"><h3 id="exerciseName">—</h3><p id="exerciseTargetLine">—</p></div>
+    <div class="progress-row">
+      <div class="rep-count">التكرارات: <span id="repCount">0</span>/<span id="repGoal">10</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="ctrl-btns">
+      <button class="ctrl" onclick="toggleSelector()">📋</button>
+      <button class="ctrl" onclick="showDemo()">🎬</button>
+      <button class="ctrl end" onclick="closeSession()">✕</button>
+      <button class="ctrl on">📹</button>
+      <button class="ctrl">🎤</button>
+    </div>
+  </div>
 
-        // ===== STATE =====
-        let currentSessionType = null;
-        let currentExercise = 'shoulder_raise';
-        let repCount = 0;
-        let isUp = false;
-        let holdTime = 0;
-        let pose = null;
-        let camera = null;
-        let timerSeconds = 0;
-        let timerInterval = null;
-        let animationInterval = null;
+  <div class="exercise-selector" id="exerciseSelector">
+    <h3>اختر التمرين</h3>
+    <div id="exerciseList"></div>
+    <button class="close-selector" onclick="toggleSelector()">إغلاق</button>
+  </div>
+</div>
 
-        const LANDMARKS = {
-            LEFT_SHOULDER: 11, RIGHT_SHOULDER: 12,
-            LEFT_ELBOW: 13, RIGHT_ELBOW: 14,
-            LEFT_WRIST: 15, RIGHT_WRIST: 16,
-            LEFT_HIP: 23, RIGHT_HIP: 24
-        };
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p>جاري تحميل نموذج الذكاء الاصطناعي...<br><small style="color:#666">وضع الدقة العالية</small></p>
+</div>
+</div>
 
-        // ===== SKELETON ANIMATION =====
-        function startSkeletonAnimation(type) {
-            stopSkeletonAnimation();
-            
-            const arm = document.getElementById('rightArmGroup');
-            if (!arm) return;
-            
-            let angle = 0;
-            let direction = 1;
-            const maxAngle = type === 'elbowFlex' ? 50 : 90;
-            const speed = 2;
-            
-            animationInterval = setInterval(() => {
-                angle += direction * speed;
-                
-                if (angle >= maxAngle) direction = -1;
-                if (angle <= 0) direction = 1;
-                
-                arm.style.transform = `rotate(${-angle}deg)`;
-            }, 30);
-        }
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/pose.js" crossorigin="anonymous"></script>
+<script>
+/* ============ NAV ============ */
+function go(p){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(p==='home'){document.getElementById('s-home').classList.add('active');document.getElementById('n-home').classList.add('active');}
+  else if(p==='appt'){document.getElementById('s-appt').classList.add('active');document.getElementById('n-appt').classList.add('active');}
+  else if(p==='rooms'){document.getElementById('s-rooms').classList.add('active');document.getElementById('n-appt').classList.add('active');}
+}
 
-        function stopSkeletonAnimation() {
-            if (animationInterval) {
-                clearInterval(animationInterval);
-                animationInterval = null;
-            }
-        }
+/* ============ DATA ============ */
+const EX = {
+  /* --- برنامج ما بعد استبدال مفصل الركبة --- */
+  knee_flexion:{
+    name:'ثني الركبة', icon:'🦵', limb:'leg', mode:'angle', kind:'knee_flex',
+    target:90, tolerance:10, minOnly:true, reps:10,
+    metric:'زاوية ثني الركبة',
+    targetText:'أكثر من 90°',
+    instruction:'اجلس على كرسي أو استلقِ، ثم اثنِ ركبتك ببطء لتقريب الكعب نحو المقعد قدر المستطاع.',
+    demo:'kneeFlex'
+  },
+  knee_extension:{
+    name:'مدّ الركبة', icon:'🦿', limb:'leg', mode:'angle', kind:'knee_ext',
+    target:0, tolerance:10, reps:10,
+    metric:'زاوية ثني الركبة',
+    targetText:'0° (استقامة كاملة)',
+    instruction:'اجلس وافرد ساقك أمامك حتى تستقيم الركبة تماماً، ثم أنزلها ببطء.',
+    demo:'kneeExt'
+  },
+  sit_to_stand:{
+    name:'الجلوس والوقوف من الكرسي', icon:'🪑', limb:'leg', mode:'reps', kind:'sit_stand',
+    reps:10, metric:'زاوية الركبة',
+    targetText:'10 تكرارات',
+    instruction:'اجلس على كرسي ثابت، ثم قف بالكامل واجلس مرة أخرى ببطء. اجعل الكاميرا ترى جسمك كاملاً من الجانب.',
+    demo:'sitStand'
+  },
+  /* --- برنامج تأهيل كبار السن --- */
+  sit_to_stand_e:{
+    name:'الجلوس والوقوف من الكرسي', icon:'🪑', limb:'leg', mode:'reps', kind:'sit_stand',
+    reps:10, metric:'زاوية الركبة',
+    targetText:'10 تكرارات',
+    instruction:'اجلس على كرسي ثابت واستعن بمساند اليدين عند الحاجة، ثم قف واجلس ببطء.',
+    demo:'sitStand'
+  },
+  heel_raise:{
+    name:'رفع الكعبين', icon:'🦶', limb:'leg', mode:'reps', kind:'heel_raise',
+    reps:15, metric:'ارتفاع الكعب',
+    targetText:'15 تكرار',
+    instruction:'قف مستنداً على كرسي، ارفع كعبيك عن الأرض وقف على أطراف أصابعك ثم انزل ببطء. لازم تظهر قدماك في الكاميرا.',
+    demo:'heelRaise'
+  },
+  knee_raise_alt:{
+    name:'رفع الركبتين بالتبادل', icon:'🚶', limb:'leg', mode:'reps', kind:'knee_raise',
+    reps:20, metric:'ارتفاع الركبة',
+    targetText:'20 تكرار (بالتبادل)',
+    instruction:'قف مستقيماً وارفع ركبة واحدة نحو الصدر ثم أنزلها وبدّل للركبة الأخرى.',
+    demo:'kneeRaise'
+  },
+  /* --- الأطراف العلوية (البرامج 3 و 4) --- */
+  shoulder_raise:{
+    name:'رفع الذراع جانبياً', icon:'💪', limb:'arm', mode:'angle', kind:'shoulder_abd',
+    target:90, tolerance:12, reps:10, metric:'زاوية الكتف',
+    targetText:'90°',
+    instruction:'ارفع ذراعك جانبياً حتى مستوى الكتف مع إبقاء الكوع مستقيماً.',
+    demo:'shoulderAbd'
+  },
+  elbow_flex:{
+    name:'ثني الكوع', icon:'🦾', limb:'arm', mode:'angle', kind:'elbow_flex',
+    target:140, tolerance:12, reps:10, metric:'زاوية الكوع',
+    targetText:'140°',
+    instruction:'اثنِ كوعك لتقريب يدك نحو كتفك مع تثبيت العضد.',
+    demo:'elbowFlex'
+  },
+  shoulder_front:{
+    name:'رفع الذراع أمامياً', icon:'🙆', limb:'arm', mode:'angle', kind:'shoulder_flex',
+    target:120, tolerance:12, reps:10, metric:'زاوية الكتف',
+    targetText:'120°',
+    instruction:'ارفع ذراعك أمامك ببطء مع إبقاء الكوع مستقيماً.',
+    demo:'shoulderFlex'
+  },
+  bicep_curl:{
+    name:'تمرين البايسبس', icon:'💪', limb:'arm', mode:'angle', kind:'elbow_flex',
+    target:145, tolerance:12, reps:10, metric:'زاوية الكوع',
+    targetText:'145°',
+    instruction:'اثنِ كوعك لرفع يدك نحو الكتف ثم أنزلها ببطء.',
+    demo:'elbowFlex'
+  },
+  shoulder_press:{
+    name:'الضغط العلوي', icon:'🏋️', limb:'arm', mode:'angle', kind:'shoulder_press',
+    target:165, tolerance:15, reps:10, metric:'زاوية الكتف',
+    targetText:'165°',
+    instruction:'ارفع ذراعك للأعلى فوق رأسك حتى تستقيم تماماً.',
+    demo:'shoulderPress'
+  }
+};
 
-        // ===== SESSION MANAGEMENT =====
-        function openSession(type) {
-            currentSessionType = type;
-            const session = sessionTypes[type];
-            
-            document.getElementById('sessionTitle').textContent = session.title;
-            document.getElementById('sessionOverlay').classList.add('active');
-            document.getElementById('navbar').style.display = 'none';
-            
-            selectExercise(session.exercises[0]);
-            buildExerciseList(session.exercises);
-            
-            repCount = 0;
-            timerSeconds = 0;
-            updateRepCount();
-            
-            showDemo();
-        }
+const PROGRAMS = [
+  {id:'knee', title:'برنامج ما بعد استبدال مفصل الركبة', doctor:'د. هيا سليمان - أخصائية علاج طبيعي',
+   people:'٦ مشاركين', mins:'٣٠ دقيقة', avatars:['س','ع','ن'], more:'+٣',
+   exercises:['knee_flexion','knee_extension','sit_to_stand']},
+  {id:'elderly', title:'برنامج تأهيل كبار السن', doctor:'د. عائشة ناصر - أخصائية تأهيل حركي',
+   people:'٨ مشاركين', mins:'٣٠ دقيقة', avatars:['ه','أ','ر'], more:'+٥',
+   exercises:['sit_to_stand_e','heel_raise','knee_raise_alt']},
+  {id:'msk', title:'برنامج تأهيل الجهاز العضلي الهيكلي', doctor:'د. فاطمة الشريف - أخصائية علاج طبيعي',
+   people:'٥ مشاركين', mins:'٣٠ دقيقة', avatars:['ن','ف'], more:'+٢',
+   exercises:['shoulder_raise','elbow_flex','shoulder_front']},
+  {id:'functional', title:'برنامج تأهيل الحركة الوظيفي', doctor:'د. محمد المنصور - أخصائي تأهيل وظيفي',
+   people:'٤ مشاركين', mins:'٣٠ دقيقة', avatars:['ع','م'], more:'+٢',
+   exercises:['shoulder_raise','bicep_curl','shoulder_press']}
+];
 
-        function closeSession() {
-            document.getElementById('sessionOverlay').classList.remove('active');
-            document.getElementById('navbar').style.display = 'flex';
-            document.getElementById('demoOverlay').classList.remove('hidden');
-            document.getElementById('angleDisplay').classList.remove('show');
-            document.getElementById('targetDisplay').classList.remove('show');
-            document.getElementById('statusFeedback').classList.remove('show');
-            document.getElementById('accuracyBadge').classList.add('hidden');
-            
-            stopSkeletonAnimation();
-            if (timerInterval) clearInterval(timerInterval);
-            
-            if (camera) {
-                camera.stop();
-                camera = null;
-            }
-        }
+document.getElementById('roomsList').innerHTML = PROGRAMS.map(p=>`
+  <div class="room" onclick="openSession('${p.id}')">
+    <div class="room-top">
+      <span class="badge live">● مباشر</span>
+      <div class="room-info"><h4>${p.title}</h4><p>${p.doctor}</p></div>
+    </div>
+    <div class="room-meta">
+      <div class="meta"><span>${p.people}</span><span class="em">👥</span></div>
+      <div class="meta"><span>${p.mins}</span><span class="em">⏱️</span></div>
+    </div>
+    <div class="room-bottom">
+      <button class="join">انضم الآن</button>
+      <div class="avatars"><div class="av more">${p.more}</div>${p.avatars.map(a=>`<div class="av">${a}</div>`).join('')}</div>
+    </div>
+  </div>`).join('');
 
-        function showDemo() {
-            document.getElementById('demoOverlay').classList.remove('hidden');
-            document.getElementById('angleDisplay').classList.remove('show');
-            document.getElementById('targetDisplay').classList.remove('show');
-            document.getElementById('statusFeedback').classList.remove('show');
-            document.getElementById('accuracyBadge').classList.add('hidden');
-            
-            const ex = exercises[currentExercise];
-            document.getElementById('demoTitle').textContent = ex.name;
-            document.getElementById('demoInstruction').textContent = ex.instruction;
-            
-            startSkeletonAnimation(ex.animation);
-        }
+/* ============ STATE ============ */
+let curProgram=null, curEx='shoulder_raise', repCount=0, holdFrames=0, pose=null, camera=null;
+let timerSeconds=0, timerInterval=null, demoRAF=null, demoT=0, demoDir=1;
+let repState='down', lastLeg=null;
 
-        // ===== EXERCISE SELECTOR =====
-        function buildExerciseList(exerciseIds) {
-            const container = document.getElementById('exerciseList');
-            container.innerHTML = exerciseIds.map(id => {
-                const ex = exercises[id];
-                return `
-                    <div class="exercise-option ${id === currentExercise ? 'active' : ''}" 
-                         onclick="selectExercise('${id}'); toggleSelector();" data-id="${id}">
-                        <span class="ex-icon">${ex.icon}</span>
-                        <div class="ex-info">
-                            <h4>${ex.name}</h4>
-                            <p>الهدف: ${ex.target}°</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+const L={SH_L:11,SH_R:12,EL_L:13,EL_R:14,WR_L:15,WR_R:16,HIP_L:23,HIP_R:24,KN_L:25,KN_R:26,AN_L:27,AN_R:28,HEEL_L:29,HEEL_R:30,TOE_L:31,TOE_R:32};
 
-        function selectExercise(id) {
-            currentExercise = id;
-            const ex = exercises[id];
-            
-            document.getElementById('exerciseName').textContent = ex.name;
-            document.getElementById('exerciseTarget').textContent = `الهدف: ${ex.target}°`;
-            document.getElementById('targetValue').textContent = ex.target;
-            
-            document.querySelectorAll('.exercise-option').forEach(el => {
-                el.classList.toggle('active', el.dataset.id === id);
-            });
-            
-            repCount = 0;
-            isUp = false;
-            holdTime = 0;
-            updateRepCount();
-        }
+/* ============ DEMO (canvas stick figure) ============ */
+const dC=document.getElementById('demoCanvas'), dX=dC.getContext('2d');
+const SC=2; // canvas is 2x for retina
 
-        function toggleSelector() {
-            document.getElementById('exerciseSelector').classList.toggle('show');
-        }
+function P(x,y){return{x:x*SC,y:y*SC};}
+function ext(p,deg,len){const r=deg*Math.PI/180;return{x:p.x+len*SC*Math.sin(r),y:p.y+len*SC*Math.cos(r)};}
+function lerp(a,b,t){return a+(b-a)*t;}
 
-        // ===== START EXERCISE =====
-        async function startExercise() {
-            document.getElementById('loadingOverlay').classList.add('show');
-            stopSkeletonAnimation();
-            
-            try {
-                pose = new Pose({
-                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/${file}`
-                });
-                
-                // HIGH ACCURACY SETTINGS
-                pose.setOptions({
-                    modelComplexity: 2,  // 0, 1, or 2 (2 = highest accuracy)
-                    smoothLandmarks: true,
-                    enableSegmentation: false,
-                    smoothSegmentation: false,
-                    minDetectionConfidence: 0.7,  // Higher = more accurate
-                    minTrackingConfidence: 0.7    // Higher = more stable
-                });
-                
-                pose.onResults(onPoseResults);
-                
-                const video = document.getElementById('video');
-                camera = new Camera(video, {
-                    onFrame: async () => {
-                        await pose.send({image: video});
-                    },
-                    width: 1280,  // Higher resolution
-                    height: 720
-                });
-                
-                await camera.start();
-                
-                document.getElementById('loadingOverlay').classList.remove('show');
-                document.getElementById('demoOverlay').classList.add('hidden');
-                document.getElementById('angleDisplay').classList.add('show');
-                document.getElementById('targetDisplay').classList.add('show');
-                document.getElementById('statusFeedback').classList.add('show');
-                document.getElementById('accuracyBadge').classList.remove('hidden');
-                
-                startTimer();
-                
-            } catch (error) {
-                console.error(error);
-                document.getElementById('loadingOverlay').classList.remove('show');
-                alert('تأكد من السماح بالوصول للكاميرا');
-            }
-        }
+function buildPose(c){
+  const cx=115, dy=c.dy||0, spread=c.view==='side'?5:26, hipSpread=c.view==='side'?4:16;
+  const pelvisY=(c.pelvisY!==undefined?c.pelvisY:150)+dy;
+  const neck=P(cx,60+dy), head=P(cx,38+dy);
+  const shR=P(cx+spread,70+dy), shL=P(cx-spread,70+dy);
+  const hipR=P(cx+hipSpread,pelvisY), hipL=P(cx-hipSpread,pelvisY);
+  const UA=40,FA=36,TH=48,SH=48;
+  const elR=ext(shR,c.rUp,UA), wrR=ext(elR,c.rFore,FA);
+  const elL=ext(shL,c.lUp,UA), wrL=ext(elL,c.lFore,FA);
+  const knR=ext(hipR,c.rTh,TH), anR=ext(knR,c.rSh,SH);
+  const knL=ext(hipL,c.lTh,TH), anL=ext(knL,c.lSh,SH);
+  return {head,neck,shR,shL,hipR,hipL,elR,wrR,elL,wrL,knR,anR,knL,anL,
+          heel:c.heel||0, chair:c.chair, cx:cx*SC, pelvisY:pelvisY*SC};
+}
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                timerSeconds++;
-                const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
-                const secs = (timerSeconds % 60).toString().padStart(2, '0');
-                document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
-            }, 1000);
-        }
+function seg(a,b,color,w){dX.strokeStyle=color;dX.lineWidth=w*SC;dX.lineCap='round';dX.beginPath();dX.moveTo(a.x,a.y);dX.lineTo(b.x,b.y);dX.stroke();}
+function joint(p,color,r){dX.beginPath();dX.arc(p.x,p.y,r*SC,0,7);dX.fillStyle=color;dX.fill();}
+function foot(an,heelLift,color){
+  const toe={x:an.x+16*SC,y:an.y+9*SC};
+  const hl={x:an.x-11*SC,y:an.y+9*SC-heelLift*15*SC};
+  seg(an,toe,color,3.5);seg(an,hl,color,3.5);
+}
 
-        // ===== POSE PROCESSING =====
-        function calculateAngle(a, b, c) {
-            const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-            let angle = Math.abs(radians * 180 / Math.PI);
-            if (angle > 180) angle = 360 - angle;
-            return angle;
-        }
+function drawDemo(j,activeLimb){
+  dX.clearRect(0,0,dC.width,dC.height);
+  const B='#4fc3f7', G='#66bb6a', DIM='#2c3d46';
+  if(j.chair){
+    dX.strokeStyle='#555';dX.lineWidth=3*SC;
+    const sy=j.pelvisY+10*SC, sx=j.cx-6*SC;
+    dX.beginPath();
+    dX.moveTo(sx-34*SC,sy);dX.lineTo(sx+30*SC,sy);           // seat
+    dX.moveTo(sx-30*SC,sy);dX.lineTo(sx-30*SC,sy+46*SC);     // back leg
+    dX.moveTo(sx+26*SC,sy);dX.lineTo(sx+26*SC,sy+46*SC);     // front leg
+    dX.moveTo(sx-32*SC,sy);dX.lineTo(sx-32*SC,sy-42*SC);     // backrest
+    dX.stroke();
+  }
+  const armC=activeLimb==='arm'?G:B, legC=activeLimb==='leg'?G:B;
+  // head + spine
+  dX.strokeStyle=B;dX.lineWidth=3.5*SC;
+  dX.beginPath();dX.arc(j.head.x,j.head.y,17*SC,0,7);dX.stroke();
+  seg(j.neck,{x:(j.hipL.x+j.hipR.x)/2,y:j.hipR.y},B,3.5);
+  seg(j.shL,j.shR,B,3.5); seg(j.hipL,j.hipR,B,3.5);
+  // left (non-active) limbs dim
+  seg(j.shL,j.elL,activeLimb==='arm'?DIM:B,3.5); seg(j.elL,j.wrL,activeLimb==='arm'?DIM:B,3.5);
+  seg(j.hipL,j.knL,activeLimb==='leg'?DIM:B,3.5); seg(j.knL,j.anL,activeLimb==='leg'?DIM:B,3.5);
+  foot(j.anL,0,activeLimb==='leg'?DIM:B);
+  // right (active) limbs
+  seg(j.shR,j.elR,armC,4.5); seg(j.elR,j.wrR,armC,4.5);
+  seg(j.hipR,j.knR,legC,4.5); seg(j.knR,j.anR,legC,4.5);
+  foot(j.anR,j.heel,legC);
+  // joints
+  [j.shL,j.hipL,j.elL,j.knL].forEach(p=>joint(p,B,3.5));
+  joint(j.shR,armC,4.5);joint(j.elR,armC,4.5);joint(j.wrR,armC,5);
+  joint(j.hipR,legC,4.5);joint(j.knR,legC,4.5);
+}
 
-        function getAngle(landmarks) {
-            const ex = exercises[currentExercise];
-            const type = ex.type;
-            
-            const rs = landmarks[LANDMARKS.RIGHT_SHOULDER];
-            const re = landmarks[LANDMARKS.RIGHT_ELBOW];
-            const rw = landmarks[LANDMARKS.RIGHT_WRIST];
-            const rh = landmarks[LANDMARKS.RIGHT_HIP];
-            
-            // Check visibility
-            if (rs.visibility < 0.6 || re.visibility < 0.6) return null;
-            
-            if (type === 'shoulder_abduction') {
-                const dx = re.x - rs.x;
-                const dy = re.y - rs.y;
-                return Math.abs(Math.atan2(-dx, dy) * 180 / Math.PI);
-            } 
-            else if (type === 'elbow_flexion') {
-                if (rw.visibility < 0.6) return null;
-                return calculateAngle(rs, re, rw);
-            }
-            else if (type === 'shoulder_flexion') {
-                return calculateAngle(rh, rs, re);
-            }
-            else if (type === 'shoulder_press') {
-                const dx = re.x - rs.x;
-                const dy = rs.y - re.y;
-                return Math.atan2(dy, Math.abs(dx)) * 180 / Math.PI;
-            }
-            
-            return 0;
-        }
+const DEMOS={
+  shoulderAbd:t=>buildPose({view:'front',rUp:lerp(6,90,t),rFore:lerp(6,90,t),lUp:-6,lFore:-6,rTh:3,rSh:3,lTh:-3,lSh:-3}),
+  elbowFlex:t=>buildPose({view:'front',rUp:8,rFore:lerp(8,-132,t),lUp:-8,lFore:-8,rTh:3,rSh:3,lTh:-3,lSh:-3}),
+  shoulderFlex:t=>buildPose({view:'side',rUp:lerp(6,120,t),rFore:lerp(6,120,t),lUp:4,lFore:4,rTh:2,rSh:2,lTh:-2,lSh:-2}),
+  shoulderPress:t=>buildPose({view:'front',rUp:lerp(10,168,t),rFore:lerp(10,168,t),lUp:-10,lFore:-10,rTh:3,rSh:3,lTh:-3,lSh:-3}),
+  kneeFlex:t=>buildPose({view:'side',rUp:6,rFore:6,lUp:4,lFore:4,rTh:lerp(0,12,t),rSh:lerp(0,-100,t),lTh:-2,lSh:-2}),
+  kneeExt:t=>buildPose({view:'side',pelvisY:150,chair:true,rUp:20,rFore:20,lUp:18,lFore:18,rTh:88,rSh:lerp(2,88,t),lTh:86,lSh:0}),
+  sitStand:t=>buildPose({view:'side',pelvisY:lerp(196,150,t),chair:true,rUp:lerp(70,10,t),rFore:lerp(70,10,t),lUp:lerp(68,8,t),lFore:lerp(68,8,t),rTh:lerp(88,2,t),rSh:lerp(2,2,t),lTh:lerp(86,-2,t),lSh:0}),
+  heelRaise:t=>buildPose({view:'side',dy:-t*9,heel:t,rUp:8,rFore:8,lUp:6,lFore:6,rTh:2,rSh:2,lTh:-2,lSh:-2}),
+  kneeRaise:t=>{
+    const a=t<0.5?t*2:0, b=t>=0.5?(t-0.5)*2:0;
+    const ta=a<0.5?a*2:(1-a)*2, tb=b<0.5?b*2:(1-b)*2;
+    return buildPose({view:'side',rUp:lerp(8,-16,ta),rFore:lerp(8,-16,ta),lUp:8,lFore:8,
+      rTh:lerp(2,78,ta),rSh:lerp(2,6,ta),lTh:lerp(-2,-78,tb),lSh:lerp(-2,-6,tb)});
+  }
+};
 
-        function updateFeedback(angle) {
-            if (angle === null) {
-                document.getElementById('statusTitle').textContent = 'لا يمكن رؤيتك';
-                document.getElementById('statusDesc').textContent = 'تأكد من ظهور جسمك في الكاميرا';
-                document.getElementById('statusIcon').className = 'status-icon neutral';
-                document.getElementById('statusIcon').textContent = '👀';
-                return;
-            }
-            
-            const ex = exercises[currentExercise];
-            const target = ex.target;
-            const tolerance = ex.tolerance;
-            
-            document.getElementById('angleValue').textContent = Math.round(angle);
-            
-            const icon = document.getElementById('statusIcon');
-            const title = document.getElementById('statusTitle');
-            const desc = document.getElementById('statusDesc');
-            
-            const diff = Math.abs(angle - target);
-            
-            if (diff <= tolerance) {
-                icon.className = 'status-icon correct';
-                icon.textContent = '✅';
-                title.textContent = 'ممتاز!';
-                desc.textContent = 'حافظ على هذه الوضعية...';
-                
-                if (!isUp) {
-                    isUp = true;
-                    holdTime = 0;
-                }
-                
-                holdTime++;
-                if (holdTime >= 30) { // ~1 second at 30fps
-                    countRep();
-                    holdTime = 0;
-                    isUp = false;
-                }
-            } else if (angle < target - tolerance) {
-                icon.className = 'status-icon neutral';
-                icon.textContent = '⬆️';
-                title.textContent = 'ارفع أكثر';
-                desc.textContent = `الهدف: ${target}° (باقي ${Math.round(target - angle)}°)`;
-                isUp = false;
-                holdTime = 0;
-            } else {
-                icon.className = 'status-icon wrong';
-                icon.textContent = '⬇️';
-                title.textContent = 'أنزل قليلاً';
-                desc.textContent = `زيادة ${Math.round(angle - target)}° عن الهدف`;
-                isUp = false;
-                holdTime = 0;
-            }
-        }
+function animateDemo(){
+  const ex=EX[curEx], fn=DEMOS[ex.demo]||DEMOS.shoulderAbd;
+  const cycle = ex.demo==='kneeRaise';
+  cancelAnimationFrame(demoRAF);
+  demoT=0; demoDir=1;
+  const step=()=>{
+    if(cycle){ demoT+=0.006; if(demoT>1) demoT=0; }
+    else { demoT+=demoDir*0.011; if(demoT>=1){demoT=1;demoDir=-1;} if(demoT<=0){demoT=0;demoDir=1;} }
+    drawDemo(fn(demoT), ex.limb);
+    demoRAF=requestAnimationFrame(step);
+  };
+  step();
+}
+function stopDemo(){cancelAnimationFrame(demoRAF);demoRAF=null;}
 
-        function countRep() {
-            repCount++;
-            updateRepCount();
-            
-            // Vibration feedback
-            if (navigator.vibrate) navigator.vibrate(100);
-            
-            if (repCount >= 10) {
-                setTimeout(() => {
-                    alert('🎉 أحسنت! أكملت ١٠ تكرارات\n\nيمكنك الانتقال للتمرين التالي');
-                    repCount = 0;
-                    updateRepCount();
-                }, 300);
-            }
-        }
+/* ============ SESSION ============ */
+function openSession(id){
+  curProgram=PROGRAMS.find(p=>p.id===id);
+  document.getElementById('sessionTitle').textContent=curProgram.title;
+  document.getElementById('sessionOverlay').classList.add('active');
+  document.getElementById('navbar').style.display='none';
+  timerSeconds=0;document.getElementById('timerDisplay').textContent='00:00';
+  buildExerciseList();
+  selectExercise(curProgram.exercises[0]);
+  showDemo();
+}
+function closeSession(){
+  document.getElementById('sessionOverlay').classList.remove('active');
+  document.getElementById('navbar').style.display='flex';
+  document.getElementById('demoOverlay').classList.remove('hidden');
+  ['metricBox','targetBox','statusFeedback'].forEach(i=>document.getElementById(i).classList.remove('show'));
+  document.getElementById('exerciseSelector').classList.remove('show');
+  stopDemo();
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  if(camera){camera.stop();camera=null;}
+}
+function showDemo(){
+  const ex=EX[curEx];
+  document.getElementById('demoOverlay').classList.remove('hidden');
+  ['metricBox','targetBox','statusFeedback'].forEach(i=>document.getElementById(i).classList.remove('show'));
+  document.getElementById('demoTitle').textContent=ex.name;
+  document.getElementById('demoInstruction').textContent=ex.instruction;
+  document.getElementById('demoTarget').textContent=
+    (ex.mode==='angle'?'المدى الحركي المستهدف: ':'العدد المستهدف: ')+ex.targetText;
+  animateDemo();
+}
+function buildExerciseList(){
+  document.getElementById('exerciseList').innerHTML=curProgram.exercises.map(id=>{
+    const e=EX[id];
+    const lbl=(e.mode==='angle'?'المدى الحركي المستهدف: ':'العدد المستهدف: ')+e.targetText;
+    return `<div class="exercise-option ${id===curEx?'active':''}" data-id="${id}" onclick="selectExercise('${id}');toggleSelector();showDemo();">
+      <span class="ex-icon">${e.icon}</span><div class="ex-info"><h4>${e.name}</h4><p>${lbl}</p></div></div>`;
+  }).join('');
+}
+function selectExercise(id){
+  curEx=id; const e=EX[id];
+  repCount=0; holdFrames=0; repState='down'; lastLeg=null;
+  document.getElementById('exerciseName').textContent=e.name;
+  document.getElementById('exerciseTargetLine').textContent=
+    (e.mode==='angle'?'المدى الحركي المستهدف: ':'العدد المستهدف: ')+e.targetText;
+  document.getElementById('targetLabel').textContent=e.mode==='angle'?'المدى الحركي المستهدف':'العدد المستهدف';
+  document.getElementById('targetValue').textContent=e.targetText;
+  document.getElementById('metricLabel').textContent=e.metric;
+  document.getElementById('metricUnit').textContent=(e.kind==='heel_raise'||e.kind==='knee_raise')?'%':'°';
+  document.getElementById('repGoal').textContent=e.reps;
+  document.querySelectorAll('.exercise-option').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+  updateReps();
+}
+function toggleSelector(){document.getElementById('exerciseSelector').classList.toggle('show');}
 
-        function updateRepCount() {
-            document.getElementById('repCount').textContent = repCount;
-            document.getElementById('progressFill').style.width = (repCount * 10) + '%';
-        }
+async function startExercise(){
+  document.getElementById('loadingOverlay').classList.add('show');
+  stopDemo();
+  try{
+    if(!pose){
+      pose=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/${f}`});
+      pose.setOptions({modelComplexity:2,smoothLandmarks:true,enableSegmentation:false,
+        minDetectionConfidence:0.7,minTrackingConfidence:0.7});
+      pose.onResults(onResults);
+    }
+    const video=document.getElementById('video');
+    if(!camera){
+      camera=new Camera(video,{onFrame:async()=>{await pose.send({image:video});},width:1280,height:720});
+      await camera.start();
+    }
+    document.getElementById('loadingOverlay').classList.remove('show');
+    document.getElementById('demoOverlay').classList.add('hidden');
+    ['metricBox','targetBox','statusFeedback'].forEach(i=>document.getElementById(i).classList.add('show'));
+    if(!timerInterval) startTimer();
+  }catch(e){
+    console.error(e);
+    document.getElementById('loadingOverlay').classList.remove('show');
+    alert('تأكد من السماح بالوصول للكاميرا');
+  }
+}
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    timerSeconds++;
+    const m=String(Math.floor(timerSeconds/60)).padStart(2,'0'), s=String(timerSeconds%60).padStart(2,'0');
+    document.getElementById('timerDisplay').textContent=`${m}:${s}`;
+  },1000);
+}
 
-        function drawPose(landmarks, ctx, w, h) {
-            ctx.clearRect(0, 0, w, h);
-            if (!landmarks) return;
-            
-            const connections = [
-                [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
-                [11, 23], [12, 24], [23, 24]
-            ];
-            
-            // Draw skeleton
-            ctx.strokeStyle = '#4fc3f7';
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            
-            connections.forEach(([i, j]) => {
-                const a = landmarks[i];
-                const b = landmarks[j];
-                if (a.visibility > 0.5 && b.visibility > 0.5) {
-                    ctx.beginPath();
-                    ctx.moveTo(a.x * w, a.y * h);
-                    ctx.lineTo(b.x * w, b.y * h);
-                    ctx.stroke();
-                }
-            });
-            
-            // Highlight right arm
-            ctx.strokeStyle = '#66bb6a';
-            ctx.lineWidth = 5;
-            
-            const rs = landmarks[12], re = landmarks[14], rw = landmarks[16];
-            if (rs.visibility > 0.5 && re.visibility > 0.5) {
-                ctx.beginPath();
-                ctx.moveTo(rs.x * w, rs.y * h);
-                ctx.lineTo(re.x * w, re.y * h);
-                if (rw.visibility > 0.5) ctx.lineTo(rw.x * w, rw.y * h);
-                ctx.stroke();
-            }
-            
-            // Draw points
-            [11, 12, 13, 14, 15, 16, 23, 24].forEach(i => {
-                const p = landmarks[i];
-                if (p.visibility > 0.5) {
-                    ctx.beginPath();
-                    ctx.arc(p.x * w, p.y * h, i >= 12 && i <= 16 ? 10 : 7, 0, Math.PI * 2);
-                    ctx.fillStyle = (i >= 12 && i <= 16) ? '#66bb6a' : '#4fc3f7';
-                    ctx.fill();
-                    ctx.strokeStyle = 'white';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-            });
-        }
+/* ============ MATH ============ */
+function ang3(a,b,c){
+  let r=Math.atan2(c.y-b.y,c.x-b.x)-Math.atan2(a.y-b.y,a.x-b.x);
+  let d=Math.abs(r*180/Math.PI); if(d>180)d=360-d; return d;
+}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function vis(lm,idxs,th){return idxs.every(i=>lm[i]&&lm[i].visibility>(th||0.55));}
 
-        function onPoseResults(results) {
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            
-            if (results.poseLandmarks) {
-                drawPose(results.poseLandmarks, ctx, canvas.width, canvas.height);
-                const angle = getAngle(results.poseLandmarks);
-                updateFeedback(angle);
-            }
-        }
-    </script>
+function measure(lm){
+  const k=EX[curEx].kind;
+  const shR=lm[L.SH_R],elR=lm[L.EL_R],wrR=lm[L.WR_R],hipR=lm[L.HIP_R],knR=lm[L.KN_R],anR=lm[L.AN_R];
+
+  if(k==='shoulder_abd'){ if(!vis(lm,[L.SH_R,L.EL_R]))return null;
+    return Math.abs(Math.atan2(-(elR.x-shR.x),(elR.y-shR.y))*180/Math.PI); }
+  if(k==='elbow_flex'){ if(!vis(lm,[L.SH_R,L.EL_R,L.WR_R]))return null; return ang3(shR,elR,wrR); }
+  if(k==='shoulder_flex'){ if(!vis(lm,[L.HIP_R,L.SH_R,L.EL_R]))return null; return ang3(hipR,shR,elR); }
+  if(k==='shoulder_press'){ if(!vis(lm,[L.SH_R,L.EL_R]))return null;
+    return Math.atan2(shR.y-elR.y,Math.abs(elR.x-shR.x))*180/Math.PI+90; }
+
+  if(k==='knee_flex'||k==='knee_ext'||k==='sit_stand'){
+    // pick the more visible leg
+    let hip,kn,an;
+    if(vis(lm,[L.HIP_R,L.KN_R,L.AN_R])){hip=hipR;kn=knR;an=anR;}
+    else if(vis(lm,[L.HIP_L,L.KN_L,L.AN_L])){hip=lm[L.HIP_L];kn=lm[L.KN_L];an=lm[L.AN_L];}
+    else return null;
+    const raw=ang3(hip,kn,an);          // 180 = مفرودة
+    return Math.max(0,180-raw);         // إكلينيكي: 0 = مفرودة
+  }
+  if(k==='heel_raise'){
+    let heel,toe;
+    if(vis(lm,[L.HEEL_R,L.TOE_R],0.4)){heel=lm[L.HEEL_R];toe=lm[L.TOE_R];}
+    else if(vis(lm,[L.HEEL_L,L.TOE_L],0.4)){heel=lm[L.HEEL_L];toe=lm[L.TOE_L];}
+    else return null;
+    const fl=dist(heel,toe)||0.001;
+    return Math.max(0,Math.min(100,((toe.y-heel.y)/fl)/0.55*100));
+  }
+  if(k==='knee_raise'){
+    const out={R:null,L:null};
+    if(vis(lm,[L.HIP_R,L.KN_R])){const t=dist(hipR,knR)||0.001;out.R=Math.max(0,Math.min(100,(1-(knR.y-hipR.y)/t)*100));}
+    if(vis(lm,[L.HIP_L,L.KN_L])){const h=lm[L.HIP_L],kk=lm[L.KN_L];const t=dist(h,kk)||0.001;out.L=Math.max(0,Math.min(100,(1-(kk.y-h.y)/t)*100));}
+    if(out.R===null&&out.L===null)return null;
+    return out;
+  }
+  return null;
+}
+
+/* ============ FEEDBACK ============ */
+function setStatus(cls,ic,t,d){
+  const i=document.getElementById('statusIcon');
+  i.className='status-icon '+cls; i.textContent=ic;
+  document.getElementById('statusTitle').textContent=t;
+  document.getElementById('statusDesc').textContent=d;
+}
+function noSee(){
+  document.getElementById('metricValue').textContent='--';
+  setStatus('neutral','👀','لا يمكن رؤيتك بوضوح','ابتعد عن الكاميرا حتى يظهر جسمك كاملاً');
+}
+function addRep(){
+  const e=EX[curEx];
+  repCount++; updateReps();
+  if(navigator.vibrate)navigator.vibrate(90);
+  if(repCount>=e.reps){
+    setTimeout(()=>{alert('🎉 أحسنت! أكملت '+e.reps+' تكرار من تمرين «'+e.name+'»');repCount=0;updateReps();},250);
+  }
+}
+function updateReps(){
+  const e=EX[curEx];
+  document.getElementById('repCount').textContent=repCount;
+  document.getElementById('progressFill').style.width=Math.min(100,repCount/e.reps*100)+'%';
+}
+
+function evaluate(m){
+  const e=EX[curEx];
+  if(m===null){noSee();return;}
+
+  if(e.mode==='angle'){
+    document.getElementById('metricValue').textContent=Math.round(m);
+    const diff=m-e.target;
+    let ok;
+    if(e.minOnly) ok = m>=e.target-2;
+    else ok = Math.abs(diff)<=e.tolerance;
+
+    if(ok){
+      setStatus('correct','✅','ممتاز!','ثبّت على هذه الوضعية...');
+      holdFrames++;
+      if(holdFrames>=25){addRep();holdFrames=-40;}
+    }else if(m<e.target){
+      holdFrames=0;
+      setStatus('neutral','⬆️','واصل الحركة','باقي '+Math.round(e.target-m)+'° للوصول للمدى المستهدف');
+    }else{
+      holdFrames=0;
+      setStatus('wrong','⬇️','تجاوزت المدى','ارجع '+Math.round(m-e.target)+'° للخلف');
+    }
+    return;
+  }
+
+  /* mode: reps */
+  if(e.kind==='sit_stand'){
+    document.getElementById('metricValue').textContent=Math.round(m);
+    if(m>90){ repState='down'; setStatus('neutral','🪑','أنت جالس','قف الآن ببطء'); }
+    else if(m<25){
+      if(repState==='down'){repState='up';addRep();}
+      setStatus('correct','✅','وقفت!','اجلس مرة أخرى ببطء');
+    }else{ setStatus('neutral','↕️','استمر','أكمل الحركة كاملة'); }
+    return;
+  }
+  if(e.kind==='heel_raise'){
+    document.getElementById('metricValue').textContent=Math.round(m);
+    if(m>60){
+      if(repState==='down'){repState='up';addRep();}
+      setStatus('correct','✅','ممتاز!','انزل ببطء على كامل القدم');
+    }else if(m<25){ repState='down'; setStatus('neutral','⬆️','ارفع كعبيك','قف على أطراف أصابعك'); }
+    else{ setStatus('neutral','↕️','ارفع أكثر','واصل حتى ترتفع الكعبين بالكامل'); }
+    return;
+  }
+  if(e.kind==='knee_raise'){
+    const r=m.R===null?0:m.R, l=m.L===null?0:m.L;
+    const best=Math.max(r,l), side=r>=l?'R':'L';
+    document.getElementById('metricValue').textContent=Math.round(best);
+    if(best>55){
+      if(repState==='down'){
+        repState='up';
+        if(lastLeg!==side){ lastLeg=side; addRep();
+          setStatus('correct','✅','ممتاز!','الآن بدّل للركبة الأخرى'); }
+        else setStatus('wrong','🔄','بدّل الركبة','ارفع الركبة الأخرى هذه المرة');
+      }else{
+        setStatus('correct','✅','ثابت','أنزل الركبة وبدّل');
+      }
+    }else if(best<25){ repState='down'; setStatus('neutral','⬆️','ارفع ركبتك','قرّب الركبة نحو الصدر'); }
+    else{ setStatus('neutral','↕️','ارفع أعلى','واصل رفع الركبة'); }
+  }
+}
+
+/* ============ DRAW OVERLAY ============ */
+const cv=document.getElementById('canvas'), cx2=cv.getContext('2d');
+function drawPose(lm,w,h){
+  cx2.clearRect(0,0,w,h);
+  const armIdx=[[12,14],[14,16]], legIdx=[[24,26],[26,28],[28,32]];
+  const base=[[11,12],[11,13],[13,15],[11,23],[12,24],[23,24],[23,25],[25,27],[27,31]];
+  const active=EX[curEx].limb;
+  cx2.lineCap='round';
+  cx2.strokeStyle='#4fc3f7';cx2.lineWidth=3;
+  base.forEach(([i,j])=>{const a=lm[i],b=lm[j];
+    if(a&&b&&a.visibility>0.5&&b.visibility>0.5){cx2.beginPath();cx2.moveTo(a.x*w,a.y*h);cx2.lineTo(b.x*w,b.y*h);cx2.stroke();}});
+  const hl=active==='leg'?legIdx:armIdx, other=active==='leg'?armIdx:legIdx;
+  other.forEach(([i,j])=>{const a=lm[i],b=lm[j];
+    if(a&&b&&a.visibility>0.5&&b.visibility>0.5){cx2.strokeStyle='#4fc3f7';cx2.lineWidth=3;cx2.beginPath();cx2.moveTo(a.x*w,a.y*h);cx2.lineTo(b.x*w,b.y*h);cx2.stroke();}});
+  cx2.strokeStyle='#66bb6a';cx2.lineWidth=6;
+  hl.forEach(([i,j])=>{const a=lm[i],b=lm[j];
+    if(a&&b&&a.visibility>0.5&&b.visibility>0.5){cx2.beginPath();cx2.moveTo(a.x*w,a.y*h);cx2.lineTo(b.x*w,b.y*h);cx2.stroke();}});
+  const pts=active==='leg'?[24,26,28]:[12,14,16];
+  [11,12,13,14,15,16,23,24,25,26,27,28].forEach(i=>{
+    const p=lm[i]; if(!p||p.visibility<0.5)return;
+    const isA=pts.includes(i);
+    cx2.beginPath();cx2.arc(p.x*w,p.y*h,isA?9:6,0,7);
+    cx2.fillStyle=isA?'#66bb6a':'#4fc3f7';cx2.fill();
+    cx2.strokeStyle='#fff';cx2.lineWidth=2;cx2.stroke();
+  });
+}
+function onResults(res){
+  cv.width=cv.offsetWidth; cv.height=cv.offsetHeight;
+  if(!res.poseLandmarks){noSee();return;}
+  drawPose(res.poseLandmarks,cv.width,cv.height);
+  evaluate(measure(res.poseLandmarks));
+}
+</script>
 </body>
 </html>
