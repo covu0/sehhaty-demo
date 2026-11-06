@@ -5,153 +5,226 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#0c3b56">
 <title>صحتي</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
---bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--blue:#4fc3f7;--teal:#26c6da;
---white:#fff;--gray:#a0a0a0;--muted:#666;--border:#282828;
---orange:#ffa726;--red:#ef5350;--green:#66bb6a;
+--bg:#f1f6f8;--bg2:#e7f0f3;--card:#ffffff;--blue:#0a8f8f;--teal:#13b3a3;--navy:#0c3b56;
+--text:#10293b;--white:#10293b;--gray:#5c7384;--muted:#94a7b4;--border:#e2ebef;
+--orange:#f39c12;--red:#e5484d;--green:#1f9d63;
+--grad:linear-gradient(135deg,#0a8f8f,#13b3a3);
+--shadow:0 8px 24px rgba(12,59,86,.08);
 }
-html,body{height:100%;overflow:hidden;font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--white)}
+html,body{height:100%;overflow:hidden;font-family:'Tajawal',sans-serif;color:var(--text);
+  background:
+    radial-gradient(600px 380px at 115% 35%,rgba(19,179,163,.10),transparent 60%),
+    radial-gradient(520px 360px at -25% 80%,rgba(12,59,86,.08),transparent 60%),
+    var(--bg)}
 .app{height:100%;width:100%;display:flex;flex-direction:column}
 .screens{flex:1;overflow:hidden;position:relative}
-.screen{position:absolute;inset:0;overflow-y:auto;background:var(--bg);display:none;-webkit-overflow-scrolling:touch}
-.screen.active{display:block}
+.screen{position:absolute;inset:0;overflow-y:auto;background:transparent;display:none;-webkit-overflow-scrolling:touch}
+.screen.active{display:block;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ico{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 
-.status{display:flex;justify-content:space-between;padding:15px 20px;padding-top:max(15px,env(safe-area-inset-top));font-size:14px;font-weight:600}
-.status-icons{display:flex;gap:6px}
-.header{padding:10px 20px 20px}
-.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
-.logo{font-size:38px;color:var(--blue)}
-.header-icons{display:flex;gap:20px;font-size:24px;color:var(--gray)}
-.greeting{text-align:right;margin-bottom:20px}
-.greeting h1{font-size:28px;font-weight:700;margin-bottom:8px}
-.greeting p{font-size:16px;color:var(--gray)}
-.search{display:flex;align-items:center;background:var(--card);border-radius:14px;padding:16px 18px;gap:12px;border:1px solid var(--border)}
-.search input{flex:1;background:none;border:none;color:var(--gray);font-family:inherit;font-size:16px;text-align:right;outline:none}
+/* HERO */
+.hero{position:relative;overflow:hidden;color:#fff;border-radius:0 0 30px 30px;
+  background:linear-gradient(160deg,#0c3b56 0%,#0b6773 55%,#13b3a3 100%);padding-bottom:22px}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(2px);pointer-events:none}
+.hero::before{width:260px;height:260px;left:-90px;top:-70px;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);animation:floatA 9s ease-in-out infinite}
+.hero::after{width:200px;height:200px;right:-60px;bottom:-80px;background:radial-gradient(circle,rgba(19,179,163,.55),transparent 70%);animation:floatB 11s ease-in-out infinite}
+.hero-pattern{position:absolute;inset:0;opacity:.09;pointer-events:none;
+  background-image:radial-gradient(#fff 1.2px,transparent 1.2px);background-size:18px 18px;
+  -webkit-mask-image:linear-gradient(to bottom,#000,transparent 85%);mask-image:linear-gradient(to bottom,#000,transparent 85%)}
+@keyframes floatA{50%{transform:translate(30px,20px)}}
+@keyframes floatB{50%{transform:translate(-25px,-15px)}}
+.status{display:flex;justify-content:space-between;padding:15px 20px;padding-top:max(15px,env(safe-area-inset-top));font-size:14px;font-weight:700;position:relative;z-index:1}
+.status-icons{display:flex;gap:6px;align-items:center}
+.status-icons .ico{width:16px;height:16px}
+.header{padding:6px 20px 0;position:relative;z-index:1}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.logo{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.logo .ico{width:24px;height:24px;stroke-width:2.6}
+.header-icons{display:flex;gap:10px}
+.hicon{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;position:relative}
+.hicon .ico{width:21px;height:21px}
+.hicon .ping{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:#ffb547;box-shadow:0 0 0 2px #0c4b5f}
+.greeting{text-align:right;margin-bottom:18px}
+.greeting h1{font-size:27px;font-weight:800;margin-bottom:6px}
+.greeting p{font-size:15px;opacity:.82}
+.search{display:flex;align-items:center;background:#fff;border-radius:16px;padding:14px 16px;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+.search input{flex:1;background:none;border:none;color:var(--text);font-family:inherit;font-size:15px;text-align:right;outline:none}
 .search input::placeholder{color:var(--muted)}
-.search-icon{font-size:22px;color:var(--blue)}
-.banner{margin:20px;border-radius:18px;background:linear-gradient(135deg,#1a237e,#0d47a1 50%,#00838f);padding:22px;position:relative;min-height:125px;display:flex;align-items:center}
-.banner-content{flex:1;padding-left:70px}
-.banner-tag{background:rgba(255,255,255,.2);padding:6px 14px;border-radius:20px;font-size:12px;display:inline-block;margin-bottom:12px}
-.banner h3{font-size:18px;font-weight:700;margin-bottom:8px}
-.banner p{font-size:14px;opacity:.85}
-.banner-emoji{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:55px}
-.dots{display:flex;justify-content:center;gap:8px;margin:18px 0}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
-.dot.active{background:var(--blue)}
-.section{padding:0 20px 25px}
-.section-head{display:flex;justify-content:space-between;margin-bottom:15px}
-.section-title{font-size:18px;font-weight:700}
-.section-link{font-size:14px;color:var(--blue)}
-.activity{background:var(--card);border-radius:18px;padding:25px;text-align:center;border:1px solid var(--border)}
-.activity h4{font-size:16px;color:var(--gray);font-weight:500;margin-bottom:12px}
-.activity p{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:20px}
-.btn{background:linear-gradient(135deg,#29b6f6,#26c6da);color:#fff;border:none;padding:16px;border-radius:14px;font-family:inherit;font-size:16px;font-weight:600;width:100%;cursor:pointer}
-.quick-items{display:flex;gap:12px;overflow-x:auto;padding:5px 0}
+.search-icon{color:var(--blue);display:flex}
+
+/* SLIDER */
+.slider{margin:20px 20px 0;border-radius:22px;overflow:hidden;position:relative;box-shadow:0 14px 34px rgba(12,59,86,.20)}
+.slides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;scroll-behavior:smooth}
+.slides::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:center;min-height:172px;position:relative;color:#fff;display:flex;align-items:center;padding:20px 20px;overflow:hidden}
+.slide-content{position:relative;z-index:2;flex:1;max-width:62%}
+.slide-tag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;backdrop-filter:blur(4px)}
+.slide-tag i{width:7px;height:7px;border-radius:50%;background:#7fffd4;animation:blink 1.4s infinite}
+.slide h3{font-size:18px;font-weight:800;margin-bottom:6px;line-height:1.4}
+.slide p{font-size:13px;opacity:.88;line-height:1.6}
+.slide-btn{margin-top:12px;background:#fff;color:var(--navy);border:none;font-family:inherit;font-weight:800;font-size:13px;padding:9px 16px;border-radius:12px;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+/* slide 1: animated vaccine */
+.s-vax{background:linear-gradient(135deg,#0c3b56 0%,#0a6f7c 60%,#13b3a3 100%)}
+.vax-art{position:absolute;left:2px;top:50%;transform:translateY(-50%);width:150px;height:150px;z-index:1}
+.vax-ring{transform-origin:70px 70px;animation:ring 2.6s ease-out infinite}
+.vax-ring.r2{animation-delay:1.3s}
+@keyframes ring{0%{transform:scale(.55);opacity:.7}100%{transform:scale(1.25);opacity:0}}
+.syringe{transform-origin:70px 70px;animation:tilt 3.2s ease-in-out infinite}
+@keyframes tilt{0%,100%{transform:rotate(-38deg)}50%{transform:rotate(-30deg) translateY(3px)}}
+.plunger{animation:press 3.2s ease-in-out infinite}
+@keyframes press{0%,100%{transform:translateY(0)}50%{transform:translateY(16px)}}
+.liquid{transform-box:fill-box;transform-origin:bottom;animation:drain 3.2s ease-in-out infinite}
+@keyframes drain{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.66)}}
+.drop{animation:drop 3.2s ease-in infinite}
+@keyframes drop{0%,45%{opacity:0;transform:translateY(0)}55%{opacity:1}80%,100%{opacity:0;transform:translateY(14px)}}
+.virus{transform-box:fill-box;transform-origin:center}
+.virus.v1{animation:vfloat 5s ease-in-out infinite}
+.virus.v2{animation:vfloat 6s ease-in-out infinite reverse}
+.virus.v3{animation:vfloat 4.4s ease-in-out infinite .6s}
+@keyframes vfloat{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(4px,-6px) rotate(40deg)}}
+.spark{animation:twinkle 2s ease-in-out infinite}
+.spark.k2{animation-delay:.7s}.spark.k3{animation-delay:1.3s}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+/* slide 2: real photo */
+.s-photo{background:#0c3b56}
+.photo-bg{position:absolute;inset:0;background:#0c3b56 url('https://images.unsplash.com/photo-1581594693690-517d9a71e1f2?auto=format&fit=crop&w=900&q=75') center 30%/cover no-repeat;animation:kenburns 14s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1.02)}to{transform:scale(1.14) translateX(-10px)}}
+.photo-shade{position:absolute;inset:0;z-index:1;background:linear-gradient(to left,rgba(12,59,86,.95) 0%,rgba(12,59,86,.72) 45%,rgba(12,59,86,.05) 100%)}
+.s-photo .slide-content{max-width:66%}
+/* slide 3 */
+.s-record{background:linear-gradient(135deg,#7a3e00 0%,#d9822b 55%,#f3b04b 100%)}
+.rec-art{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:112px;height:112px;z-index:1}
+.check-path{stroke-dasharray:60;stroke-dashoffset:60;animation:drawc 2.8s ease-in-out infinite}
+@keyframes drawc{0%,15%{stroke-dashoffset:60}45%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:60}}
+.dots{display:flex;justify-content:center;gap:7px;margin:14px 0 18px}
+.dot{width:8px;height:8px;border-radius:8px;background:#c9d7de;cursor:pointer;transition:all .3s}
+.dot.active{background:var(--blue);width:22px}
+
+.section{padding:0 20px 24px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.section-title{font-size:18px;font-weight:800;color:var(--navy)}
+.section-link{font-size:14px;color:var(--blue);font-weight:700}
+.activity{background:var(--card);border-radius:20px;padding:22px;text-align:center;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.activity::before{content:"";position:absolute;width:160px;height:160px;border-radius:50%;left:-50px;top:-60px;background:radial-gradient(circle,rgba(19,179,163,.12),transparent 70%)}
+.act-ic{width:54px;height:54px;border-radius:16px;margin:0 auto 12px;background:rgba(229,72,77,.10);color:var(--red);display:flex;align-items:center;justify-content:center}
+.act-ic .ico{width:28px;height:28px;animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+.activity h4{font-size:16px;color:var(--text);font-weight:700;margin-bottom:8px}
+.activity p{font-size:14px;color:var(--gray);line-height:1.8;margin-bottom:18px}
+.btn{background:var(--grad);color:#fff;border:none;padding:15px;border-radius:14px;font-family:inherit;font-size:16px;font-weight:700;width:100%;cursor:pointer;box-shadow:0 8px 20px rgba(10,143,143,.28)}
+.quick-items{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px}
 .quick-items::-webkit-scrollbar{display:none}
-.quick-item{min-width:110px;background:var(--card);border-radius:16px;padding:18px;text-align:center;border:1px solid var(--border)}
-.quick-item-icon{width:48px;height:48px;margin:0 auto 12px;background:var(--bg2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px}
-.quick-item span{font-size:13px;color:var(--gray)}
+.quick-item{min-width:112px;background:var(--card);border-radius:18px;padding:16px;text-align:center;border:1px solid var(--border);box-shadow:var(--shadow)}
+.quick-item-icon{width:48px;height:48px;margin:0 auto 10px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(10,143,143,.10)}
+.quick-item:nth-child(2) .quick-item-icon{background:rgba(243,156,18,.12)}
+.quick-item:nth-child(3) .quick-item-icon{background:rgba(12,59,86,.08)}
+.quick-item span{font-size:13px;color:var(--text);font-weight:600}
 
-.nav{background:var(--bg2);display:flex;justify-content:space-around;padding:14px 10px;padding-bottom:max(14px,env(safe-area-inset-bottom));border-top:1px solid var(--border)}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 18px;border-radius:16px;cursor:pointer}
-.nav-btn.active{background:rgba(79,195,247,.12)}
-.nav-btn .icon{font-size:28px;color:var(--muted)}
+.nav{background:rgba(255,255,255,.96);display:flex;justify-content:space-around;padding:10px 8px;padding-bottom:max(10px,env(safe-area-inset-bottom));border-top:1px solid var(--border);box-shadow:0 -6px 24px rgba(12,59,86,.06);backdrop-filter:blur(10px)}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 16px;border-radius:16px;cursor:pointer;transition:background .2s}
+.nav-btn.active{background:rgba(10,143,143,.10)}
+.nav-btn .icon{color:var(--muted);display:flex}
+.nav-btn .icon .ico{width:25px;height:25px}
 .nav-btn.active .icon{color:var(--blue)}
-.nav-btn .text{font-size:12px;color:var(--muted);font-weight:500}
-.nav-btn.active .text{color:var(--blue)}
+.nav-btn .text{font-size:12px;color:var(--muted);font-weight:600}
+.nav-btn.active .text{color:var(--blue);font-weight:800}
 
-.page-head{display:flex;align-items:center;justify-content:center;padding:20px;padding-top:max(20px,env(safe-area-inset-top));position:relative}
-.back{position:absolute;right:18px;font-size:34px;cursor:pointer;padding:5px 10px}
-.page-title{font-size:20px;font-weight:700}
+.page-head{display:flex;align-items:center;justify-content:center;padding:18px 20px;padding-top:max(18px,env(safe-area-inset-top));position:sticky;top:0;z-index:3;background:rgba(241,246,248,.9);backdrop-filter:blur(10px)}
+.back{position:absolute;right:16px;font-size:30px;cursor:pointer;width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--navy);line-height:1}
+.page-title{font-size:19px;font-weight:800;color:var(--navy)}
 
-.options{padding:15px 20px}
-.option{background:var(--card);border-radius:18px;padding:22px;margin-bottom:14px;display:flex;align-items:center;border:1px solid var(--border);cursor:pointer}
-.option:active{background:var(--bg2)}
-.option.teal{background:rgba(38,198,218,.08);border-color:var(--teal)}
-.option.orange{background:rgba(255,167,38,.1);border-color:var(--orange);position:relative}
-.new-badge{position:absolute;top:-12px;left:20px;background:var(--orange);color:#000;font-size:12px;font-weight:700;padding:5px 14px;border-radius:14px}
-.option-arrow{font-size:24px;color:var(--muted);margin-left:15px}
+.options{padding:12px 20px}
+.option{background:var(--card);border-radius:18px;padding:18px;margin-bottom:12px;display:flex;align-items:center;border:1px solid var(--border);cursor:pointer;box-shadow:var(--shadow);transition:transform .15s}
+.option:active{transform:scale(.98)}
+.option.teal{background:linear-gradient(135deg,rgba(19,179,163,.10),#fff);border-color:rgba(19,179,163,.45)}
+.option.orange{background:linear-gradient(135deg,rgba(243,156,18,.12),#fff);border-color:rgba(243,156,18,.6);position:relative}
+.new-badge{position:absolute;top:-11px;left:18px;background:var(--orange);color:#fff;font-size:12px;font-weight:800;padding:4px 13px;border-radius:14px;box-shadow:0 4px 10px rgba(243,156,18,.35)}
+.option-arrow{font-size:22px;color:var(--muted);margin-left:12px}
 .option-info{flex:1;text-align:right}
-.option-info h4{font-size:17px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:flex-end;gap:10px}
-.option-info p{font-size:14px;color:var(--gray);line-height:1.6}
+.option-info h4{font-size:16.5px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;justify-content:flex-end;gap:10px;color:var(--navy)}
+.option-info h4>span:first-child{width:36px;height:36px;border-radius:11px;background:var(--bg2);display:inline-flex;align-items:center;justify-content:center;font-size:18px}
+.option-info p{font-size:13.5px;color:var(--gray);line-height:1.6}
 .qudra-name{font-weight:800;letter-spacing:.3px}
-.qudra-en{font-size:13px;color:var(--orange);font-weight:600}
+.qudra-en{font-size:13px;color:var(--orange);font-weight:700}
 
-.rooms{padding:15px 20px}
-.room{background:var(--card);border-radius:20px;padding:22px;margin-bottom:18px;border:1px solid var(--border);cursor:pointer}
-.room:active{background:var(--bg2)}
-.room-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:10px}
+.rooms{padding:12px 20px}
+.room{background:var(--card);border-radius:20px;padding:20px;margin-bottom:16px;border:1px solid var(--border);cursor:pointer;box-shadow:var(--shadow)}
+.room:active{transform:scale(.99)}
+.room-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}
 .room-info{flex:1;text-align:right}
-.room-info h4{font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.5}
-.room-info p{font-size:14px;color:var(--gray)}
-.badge{padding:7px 14px;border-radius:25px;font-size:13px;font-weight:600;white-space:nowrap}
-.badge.live{background:rgba(102,187,106,.15);color:var(--green)}
-.room-meta{display:flex;gap:25px;margin-bottom:18px;justify-content:flex-end}
+.room-info h4{font-size:16px;font-weight:800;margin-bottom:6px;line-height:1.5;color:var(--navy)}
+.room-info p{font-size:13.5px;color:var(--gray)}
+.badge{padding:6px 12px;border-radius:25px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.badge.live{background:rgba(31,157,99,.12);color:var(--green)}
+.room-meta{display:flex;gap:22px;margin-bottom:16px;justify-content:flex-end}
 .meta{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--gray)}
 .meta .em{color:var(--blue)}
 .room-bottom{display:flex;justify-content:space-between;align-items:center}
 .avatars{display:flex;flex-direction:row-reverse}
-.av{width:36px;height:36px;border-radius:50%;border:3px solid var(--card);margin-right:-10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff}
-.av:nth-child(1){background:#5c6bc0}.av:nth-child(2){background:#26a69a}.av:nth-child(3){background:#ffa726}
-.av.more{background:var(--bg2);color:var(--muted);font-size:12px}
-.join{background:linear-gradient(135deg,#29b6f6,#26c6da);color:#fff;border:none;padding:14px 30px;border-radius:14px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.av{width:36px;height:36px;border-radius:50%;border:3px solid var(--card);margin-right:-10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff}
+.av:nth-child(1){background:#0c3b56}.av:nth-child(2){background:#13b3a3}.av:nth-child(3){background:#f39c12}
+.av.more{background:var(--bg2);color:var(--gray);font-size:12px}
+.join{background:var(--grad);color:#fff;border:none;padding:12px 26px;border-radius:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(10,143,143,.25)}
 
-/* SESSION */
-.session-overlay{position:fixed;inset:0;background:#000;z-index:1000;display:none;flex-direction:column}
+/* SESSION (stays dark for the camera view) */
+.session-overlay{--bg:#08141c;--bg2:#0f1f2a;--card:#132531;--border:#1f3646;--white:#fff;--text:#fff;--gray:#9db3c1;--muted:#5f7787;--blue:#2fd3c2;
+  color:#fff;position:fixed;inset:0;background:#000;z-index:1000;display:none;flex-direction:column}
 .session-overlay.active{display:flex}
-.session-head{padding:15px 20px;padding-top:max(15px,env(safe-area-inset-top));background:rgba(0,0,0,.95);display:flex;justify-content:space-between;align-items:center;position:absolute;top:0;left:0;right:0;z-index:15}
+.session-head{padding:15px 20px;padding-top:max(15px,env(safe-area-inset-top));background:rgba(8,20,28,.95);display:flex;justify-content:space-between;align-items:center;position:absolute;top:0;left:0;right:0;z-index:15}
 .session-back{font-size:32px;color:#fff;cursor:pointer;padding:8px}
-.session-title{font-size:14px;font-weight:600;text-align:center;flex:1}
-.timer{background:var(--red);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.session-title{font-size:14px;font-weight:700;text-align:center;flex:1}
+.timer{background:var(--red);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
 .timer-dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:blink 1s infinite}
 @keyframes blink{50%{opacity:.3}}
 
-.camera-area{flex:1;position:relative;background:#0d0d0d;overflow:hidden}
+.camera-area{flex:1;position:relative;background:#08141c;overflow:hidden}
 #video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 #canvas{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);pointer-events:none}
 
-.demo-overlay{position:absolute;inset:0;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;padding:70px 20px 20px;overflow-y:auto}
+.demo-overlay{position:absolute;inset:0;background:radial-gradient(500px 300px at 50% 30%,rgba(47,211,194,.10),transparent 70%),#08141c;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5;padding:70px 20px 20px;overflow-y:auto}
 .demo-overlay.hidden{display:none}
-.demo-title{font-size:20px;font-weight:700;margin-bottom:4px;color:var(--blue);text-align:center}
+.demo-title{font-size:20px;font-weight:800;margin-bottom:4px;color:var(--blue);text-align:center}
 .demo-sub{font-size:13px;color:var(--gray);margin-bottom:12px}
 #demoCanvas{width:230px;height:300px;max-height:38vh}
-.demo-target{background:rgba(102,187,106,.12);border:1px solid var(--green);color:var(--green);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;margin-bottom:12px}
-.demo-instruction{background:rgba(79,195,247,.12);border:1px solid rgba(79,195,247,.5);border-radius:12px;padding:14px 18px;text-align:center;margin-bottom:18px;max-width:320px}
+.demo-target{background:rgba(31,157,99,.14);border:1px solid #34c27f;color:#4fd894;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:700;margin-bottom:12px}
+.demo-instruction{background:rgba(47,211,194,.10);border:1px solid rgba(47,211,194,.45);border-radius:12px;padding:14px 18px;text-align:center;margin-bottom:18px;max-width:320px}
 .demo-instruction p{font-size:14px;line-height:1.7}
-.start-exercise-btn{background:linear-gradient(135deg,#29b6f6,#26c6da);color:#fff;border:none;padding:16px 45px;border-radius:16px;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer}
+.start-exercise-btn{background:var(--grad);color:#fff;border:none;padding:16px 45px;border-radius:16px;font-family:inherit;font-size:17px;font-weight:800;cursor:pointer}
 
-.metric-box{position:absolute;top:75px;right:15px;background:rgba(0,0,0,.85);border-radius:16px;padding:12px 18px;text-align:center;display:none;z-index:8}
+.metric-box{position:absolute;top:75px;right:15px;background:rgba(8,20,28,.85);border-radius:16px;padding:12px 18px;text-align:center;display:none;z-index:8}
 .metric-box.show{display:block}
 .metric-label{font-size:11px;color:var(--gray);margin-bottom:2px}
 .metric-value{font-size:38px;font-weight:800;color:var(--blue);line-height:1.1}
 .metric-unit{font-size:16px;color:var(--gray)}
-.target-box{position:absolute;top:75px;left:15px;background:rgba(102,187,106,.18);border:1px solid var(--green);border-radius:10px;padding:8px 12px;font-size:11px;max-width:140px;display:none;z-index:8;line-height:1.5}
+.target-box{position:absolute;top:75px;left:15px;background:rgba(31,157,99,.2);border:1px solid #34c27f;border-radius:10px;padding:8px 12px;font-size:11px;max-width:140px;display:none;z-index:8;line-height:1.5}
 .target-box.show{display:block}
-.target-box b{display:block;color:var(--green);font-size:12px}
+.target-box b{display:block;color:#4fd894;font-size:12px}
 
-.status-feedback{position:absolute;bottom:15px;left:15px;right:15px;background:rgba(0,0,0,.9);border-radius:16px;padding:14px 18px;display:none;align-items:center;gap:14px;z-index:8}
+.status-feedback{position:absolute;bottom:15px;left:15px;right:15px;background:rgba(8,20,28,.9);border-radius:16px;padding:14px 18px;display:none;align-items:center;gap:14px;z-index:8}
 .status-feedback.show{display:flex}
 .status-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
-.status-icon.correct{background:rgba(102,187,106,.2);border:3px solid var(--green)}
-.status-icon.wrong{background:rgba(239,83,80,.2);border:3px solid var(--red)}
-.status-icon.neutral{background:rgba(255,167,38,.2);border:3px solid var(--orange)}
+.status-icon.correct{background:rgba(31,157,99,.2);border:3px solid #34c27f}
+.status-icon.wrong{background:rgba(229,72,77,.2);border:3px solid var(--red)}
+.status-icon.neutral{background:rgba(243,156,18,.2);border:3px solid var(--orange)}
 .status-text h4{font-size:16px;margin-bottom:3px}
 .status-text p{font-size:13px;color:var(--gray)}
 
-.session-controls{background:rgba(0,0,0,.97);padding:14px 20px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
-.exercise-info{text-align:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #333}
+.session-controls{background:rgba(8,20,28,.97);padding:14px 20px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
+.exercise-info{text-align:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .exercise-info h3{font-size:16px;margin-bottom:4px}
 .exercise-info p{font-size:12px;color:var(--gray)}
 .progress-row{display:flex;align-items:center;gap:15px;margin-bottom:12px}
-.progress-bar{flex:1;height:10px;background:#333;border-radius:10px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:10px;transition:width .3s;width:0}
+.progress-bar{flex:1;height:10px;background:var(--border);border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),#34c27f);border-radius:10px;transition:width .3s;width:0}
 .rep-count{font-size:13px;color:var(--gray);white-space:nowrap}
-.rep-count span{color:var(--blue);font-weight:700}
+.rep-count span{color:var(--blue);font-weight:800}
 .ctrl-btns{display:flex;justify-content:center;gap:12px}
 .ctrl{width:50px;height:50px;border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .ctrl.on{background:var(--blue)}
@@ -161,18 +234,19 @@ html,body{height:100%;overflow:hidden;font-family:'Tajawal',sans-serif;backgroun
 .exercise-selector.show{transform:translateY(0)}
 .exercise-selector h3{font-size:18px;margin-bottom:18px;text-align:center}
 .exercise-option{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;gap:15px}
-.exercise-option.active{border-color:var(--blue);background:rgba(79,195,247,.1)}
+.exercise-option.active{border-color:var(--blue);background:rgba(47,211,194,.1)}
 .exercise-option .ex-icon{font-size:30px}
 .exercise-option .ex-info{flex:1;text-align:right}
 .exercise-option .ex-info h4{font-size:15px;margin-bottom:4px}
 .exercise-option .ex-info p{font-size:12px;color:var(--gray)}
 .close-selector{background:var(--card);color:#fff;border:none;padding:16px;border-radius:14px;font-family:inherit;font-size:16px;width:100%;margin-top:6px;cursor:pointer}
 
-.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:2000}
+.loading-overlay{position:fixed;inset:0;background:rgba(8,20,28,.95);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:2000}
 .loading-overlay.show{display:flex}
-.spinner{width:50px;height:50px;border:4px solid #333;border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite}
+.spinner{width:50px;height:50px;border:4px solid #1f3646;border-top-color:#2fd3c2;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-overlay p{font-size:16px;color:var(--gray);text-align:center}
+.loading-overlay p{font-size:16px;color:#9db3c1;text-align:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
@@ -181,20 +255,105 @@ html,body{height:100%;overflow:hidden;font-family:'Tajawal',sans-serif;backgroun
 
 <!-- HOME -->
 <div class="screen active" id="s-home">
-  <div class="status"><span>٦:٣٥</span><div class="status-icons"><span>⚡</span><span>📶</span><span>🔋</span></div></div>
-  <div class="header">
-    <div class="header-top"><div class="header-icons"><span>☰</span><span>🔔</span><span>🎧</span></div><div class="logo">✓</div></div>
-    <div class="greeting"><h1>مرحباً، محمد</h1><p>كيف حال صحتك اليوم؟</p></div>
-    <div class="search"><input type="text" placeholder="ابحث عن أي شيء، مثال: فحص"><span class="search-icon">🔍</span></div>
+  <div class="hero">
+    <div class="hero-pattern"></div>
+    <div class="status"><span>٦:٣٥</span><div class="status-icons">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 13a10 10 0 0 1 14 0M8.5 16.5a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/></svg>
+      <svg class="ico" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 11v2"/><rect x="4" y="9" width="11" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
+    </div></div>
+    <div class="header">
+      <div class="header-top">
+        <div class="header-icons">
+          <span class="hicon"><svg class="ico" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span>
+          <span class="hicon"><svg class="ico" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="ping"></i></span>
+          <span class="hicon"><svg class="ico" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></span>
+        </div>
+        <div class="logo"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      </div>
+      <div class="greeting"><h1>مرحباً، محمد</h1><p>كيف حال صحتك اليوم؟</p></div>
+      <div class="search"><input type="text" placeholder="ابحث عن أي شيء، مثال: فحص"><span class="search-icon"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span></div>
+    </div>
   </div>
-  <div class="banner">
-    <div class="banner-content"><span class="banner-tag">الحملة الوطنية للتطعيم</span><h3>لقاح الإنفلونزا الموسمية</h3><p>احجز موعدك السنوية واحفظها الآن</p></div>
-    <span class="banner-emoji">💉</span>
+
+  <div class="slider">
+    <div class="slides" id="slides">
+      <!-- 1: animated flu vaccine -->
+      <div class="slide s-vax">
+        <div class="slide-content">
+          <span class="slide-tag"><i></i>الحملة الوطنية للتطعيم</span>
+          <h3>لقاح الإنفلونزا الموسمية</h3>
+          <p>احجز موعد جرعتك السنوية الآن</p>
+          <button class="slide-btn">احجز موعدك</button>
+        </div>
+        <svg class="vax-art" viewBox="0 0 140 140" aria-hidden="true">
+          <defs>
+            <symbol id="virus" viewBox="-12 -12 24 24">
+              <g stroke="#ff9e9e" stroke-width="1.6" stroke-linecap="round">
+                <path d="M0 0L10 0M0 0L7 7M0 0L0 10M0 0L-7 7M0 0L-10 0M0 0L-7 -7M0 0L0 -10M0 0L7 -7"/>
+              </g>
+              <g fill="#ff9e9e"><circle cx="10" cy="0" r="1.8"/><circle cx="7" cy="7" r="1.8"/><circle cx="0" cy="10" r="1.8"/><circle cx="-7" cy="7" r="1.8"/><circle cx="-10" cy="0" r="1.8"/><circle cx="-7" cy="-7" r="1.8"/><circle cx="0" cy="-10" r="1.8"/><circle cx="7" cy="-7" r="1.8"/></g>
+              <circle r="6.5" fill="#ff6b6b"/><circle cx="-2" cy="-2" r="1.6" fill="#ffc2c2"/>
+            </symbol>
+          </defs>
+          <circle class="vax-ring" cx="70" cy="70" r="52" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2"/>
+          <circle class="vax-ring r2" cx="70" cy="70" r="52" fill="none" stroke="rgba(127,255,212,.5)" stroke-width="2"/>
+          <path d="M70 26l30 11v22c0 21-13 35-30 43-17-8-30-22-30-43V37z" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
+          <use class="virus v1" href="#virus" x="8" y="14" width="24" height="24" opacity=".9"/>
+          <use class="virus v2" href="#virus" x="110" y="86" width="20" height="20" opacity=".8"/>
+          <use class="virus v3" href="#virus" x="110" y="18" width="16" height="16" opacity=".7"/>
+          <g class="syringe">
+            <g class="plunger">
+              <rect x="56" y="6" width="28" height="6" rx="3" fill="#fff"/>
+              <rect x="67" y="10" width="6" height="34" fill="#e3f3f6"/>
+              <rect x="60" y="42" width="20" height="6" rx="2" fill="#0c3b56" stroke="#fff" stroke-width="1"/>
+            </g>
+            <rect x="48" y="36" width="44" height="6" rx="3" fill="#fff"/>
+            <rect class="liquid" x="61" y="48" width="18" height="47" rx="3" fill="#7fffd4" opacity=".9"/>
+            <rect x="58" y="40" width="24" height="58" rx="5" fill="rgba(255,255,255,.18)" stroke="#fff" stroke-width="2.5"/>
+            <path d="M58 56h7M58 66h5M58 76h7M58 86h5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="65" y="98" width="10" height="7" rx="2" fill="#fff"/>
+            <path d="M70 105v24" stroke="#eaf6f8" stroke-width="2.2" stroke-linecap="round"/>
+            <circle class="drop" cx="70" cy="132" r="2.6" fill="#7fffd4"/>
+          </g>
+          <path class="spark" d="M30 108l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff"/>
+          <path class="spark k2" d="M104 58l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5z" fill="#7fffd4"/>
+          <path class="spark k3" d="M20 66l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2z" fill="#fff"/>
+        </svg>
+      </div>
+      <!-- 2: real photo -->
+      <div class="slide s-photo">
+        <div class="photo-bg" role="img" aria-label="ممرضة تعطي مريضاً جرعة لقاح في ذراعه"></div>
+        <div class="photo-shade"></div>
+        <div class="slide-content">
+          <span class="slide-tag"><i></i>جرعتك في دقائق</span>
+          <h3>خذ لقاح الإنفلونزا واحمِ من تحب</h3>
+          <p>متوفر في مراكز الرعاية الصحية الأولية</p>
+          <button class="slide-btn">أقرب مركز</button>
+        </div>
+      </div>
+      <!-- 3: vaccine record -->
+      <div class="slide s-record">
+        <div class="slide-content">
+          <span class="slide-tag"><i></i>سجل اللقاحات</span>
+          <h3>تابع لقاحاتك ومواعيد جرعاتك</h3>
+          <p>كل شهاداتك الصحية في مكان واحد</p>
+          <button class="slide-btn">عرض السجل</button>
+        </div>
+        <svg class="rec-art" viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M50 8l34 12v26c0 22-15 38-34 46C31 84 16 68 16 46V20z" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+          <path class="check-path" d="M34 50l12 12 22-24" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
   </div>
-  <div class="dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+  <div class="dots" id="dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+
   <div class="section">
     <div class="section-head"><span class="section-title">نشاطك اليومي</span></div>
-    <div class="activity"><h4>لم يتم الربط حتى الآن</h4><p>السماح بالوصول الى تطبيق Health الخاص بك لمتابعة نشاطك الصحي</p><button class="btn">اضغط للسماح</button></div>
+    <div class="activity">
+      <div class="act-ic"><svg class="ico" viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg></div>
+      <h4>لم يتم الربط حتى الآن</h4><p>اسمح بالوصول إلى تطبيق Health لمتابعة نشاطك الصحي</p><button class="btn">اضغط للسماح</button>
+    </div>
   </div>
   <div class="section">
     <div class="section-head"><span class="section-title">آخر مستجداتك</span><span class="section-link">عرض الكل ←</span></div>
@@ -204,12 +363,12 @@ html,body{height:100%;overflow:hidden;font-family:'Tajawal',sans-serif;backgroun
       <div class="quick-item"><div class="quick-item-icon">🔬</div><span>بدء الفحوصات</span></div>
     </div>
   </div>
-  <div style="height:60px"></div>
+  <div style="height:30px"></div>
 </div>
 
 <!-- APPOINTMENTS -->
 <div class="screen" id="s-appt">
-  <div class="page-head"><span class="back" onclick="go('home')">›</span><span class="page-title">نوع الموعد</span></div>
+  <div class="page-head"><span class="back" onclick="go('home')"><svg class="ico" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M9 6l6 6-6 6"/></svg></span><span class="page-title">نوع الموعد</span></div>
   <div class="options">
     <div class="option"><span class="option-arrow">‹</span><div class="option-info"><h4><span>⏱️</span> استشارة فورية</h4><p>تحدث مع طبيب الآن بدون أي حجز مسبق</p></div></div>
     <div class="option"><span class="option-arrow">‹</span><div class="option-info"><h4><span>🏥</span> موعد حضوري</h4><p>حجز موعد حضوري في أحد المنشآت التابعة</p></div></div>
@@ -227,7 +386,7 @@ html,body{height:100%;overflow:hidden;font-family:'Tajawal',sans-serif;backgroun
 
 <!-- ROOMS -->
 <div class="screen" id="s-rooms">
-  <div class="page-head"><span class="back" onclick="go('appt')">›</span><span class="page-title">غرف التأهيل الجماعية</span></div>
+  <div class="page-head"><span class="back" onclick="go('appt')"><svg class="ico" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M9 6l6 6-6 6"/></svg></span><span class="page-title">غرف التأهيل الجماعية</span></div>
   <div class="rooms" id="roomsList"></div>
 </div>
 
@@ -235,10 +394,10 @@ html,body{height:100%;overflow:hidden;font-family:'Tajawal',sans-serif;backgroun
 
 <!-- NAV -->
 <div class="nav" id="navbar">
-  <div class="nav-btn" onclick="go('home')"><span class="icon">👤</span><span class="text">ملفي</span></div>
-  <div class="nav-btn" onclick="go('home')"><span class="icon">🌿</span><span class="text">جودة الحياة</span></div>
-  <div class="nav-btn" onclick="go('appt')" id="n-appt"><span class="icon">📅</span><span class="text">المواعيد</span></div>
-  <div class="nav-btn active" onclick="go('home')" id="n-home"><span class="icon">🏠</span><span class="text">الرئيسية</span></div>
+  <div class="nav-btn" onclick="go('home')"><span class="icon"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span><span class="text">ملفي</span></div>
+  <div class="nav-btn" onclick="go('home')"><span class="icon"><svg class="ico" viewBox="0 0 24 24"><path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15"/><path d="M5 19l7-7"/></svg></span><span class="text">جودة الحياة</span></div>
+  <div class="nav-btn" onclick="go('appt')" id="n-appt"><span class="icon"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="text">المواعيد</span></div>
+  <div class="nav-btn active" onclick="go('home')" id="n-home"><span class="icon"><svg class="ico" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></span><span class="text">الرئيسية</span></div>
 </div>
 
 <!-- SESSION -->
@@ -314,6 +473,21 @@ function go(p){
   else if(p==='appt'){document.getElementById('s-appt').classList.add('active');document.getElementById('n-appt').classList.add('active');}
   else if(p==='rooms'){document.getElementById('s-rooms').classList.add('active');document.getElementById('n-appt').classList.add('active');}
 }
+
+/* ============ BANNER SLIDER ============ */
+(function(){
+  const track=document.getElementById('slides'), dots=[...document.querySelectorAll('#dots .dot')];
+  let idx=0, timer=null;
+  const w=()=>track.clientWidth;
+  function show(i){idx=(i+dots.length)%dots.length;track.scrollTo({left:-idx*w()});mark();}
+  function mark(){dots.forEach((d,k)=>d.classList.toggle('active',k===idx));}
+  function auto(){clearInterval(timer);timer=setInterval(()=>show(idx+1),4500);}
+  track.addEventListener('scroll',()=>{const i=Math.round(Math.abs(track.scrollLeft)/w());if(i!==idx){idx=i;mark();}},{passive:true});
+  track.addEventListener('touchstart',()=>clearInterval(timer),{passive:true});
+  track.addEventListener('touchend',auto,{passive:true});
+  dots.forEach((d,k)=>d.addEventListener('click',()=>{show(k);auto();}));
+  auto();
+})();
 
 /* ============ DATA ============ */
 const EX = {
@@ -472,9 +646,9 @@ function foot(an,heelLift,color){
 
 function drawDemo(j,activeLimb){
   dX.clearRect(0,0,dC.width,dC.height);
-  const B='#4fc3f7', G='#66bb6a', DIM='#2c3d46';
+  const B='#2fd3c2', G='#4fd894', DIM='#1f3646';
   if(j.chair){
-    dX.strokeStyle='#555';dX.lineWidth=3*SC;
+    dX.strokeStyle='#3d5566';dX.lineWidth=3*SC;
     const sy=j.pelvisY+10*SC, sx=j.cx-6*SC;
     dX.beginPath();
     dX.moveTo(sx-34*SC,sy);dX.lineTo(sx+30*SC,sy);           // seat
@@ -764,13 +938,13 @@ function drawPose(lm,w,h){
   const base=[[11,12],[11,13],[13,15],[11,23],[12,24],[23,24],[23,25],[25,27],[27,31]];
   const active=EX[curEx].limb;
   cx2.lineCap='round';
-  cx2.strokeStyle='#4fc3f7';cx2.lineWidth=3;
+  cx2.strokeStyle='#2fd3c2';cx2.lineWidth=3;
   base.forEach(([i,j])=>{const a=lm[i],b=lm[j];
     if(a&&b&&a.visibility>0.5&&b.visibility>0.5){cx2.beginPath();cx2.moveTo(a.x*w,a.y*h);cx2.lineTo(b.x*w,b.y*h);cx2.stroke();}});
   const hl=active==='leg'?legIdx:armIdx, other=active==='leg'?armIdx:legIdx;
   other.forEach(([i,j])=>{const a=lm[i],b=lm[j];
-    if(a&&b&&a.visibility>0.5&&b.visibility>0.5){cx2.strokeStyle='#4fc3f7';cx2.lineWidth=3;cx2.beginPath();cx2.moveTo(a.x*w,a.y*h);cx2.lineTo(b.x*w,b.y*h);cx2.stroke();}});
-  cx2.strokeStyle='#66bb6a';cx2.lineWidth=6;
+    if(a&&b&&a.visibility>0.5&&b.visibility>0.5){cx2.strokeStyle='#2fd3c2';cx2.lineWidth=3;cx2.beginPath();cx2.moveTo(a.x*w,a.y*h);cx2.lineTo(b.x*w,b.y*h);cx2.stroke();}});
+  cx2.strokeStyle='#4fd894';cx2.lineWidth=6;
   hl.forEach(([i,j])=>{const a=lm[i],b=lm[j];
     if(a&&b&&a.visibility>0.5&&b.visibility>0.5){cx2.beginPath();cx2.moveTo(a.x*w,a.y*h);cx2.lineTo(b.x*w,b.y*h);cx2.stroke();}});
   const pts=active==='leg'?[24,26,28]:[12,14,16];
@@ -778,7 +952,7 @@ function drawPose(lm,w,h){
     const p=lm[i]; if(!p||p.visibility<0.5)return;
     const isA=pts.includes(i);
     cx2.beginPath();cx2.arc(p.x*w,p.y*h,isA?9:6,0,7);
-    cx2.fillStyle=isA?'#66bb6a':'#4fc3f7';cx2.fill();
+    cx2.fillStyle=isA?'#4fd894':'#2fd3c2';cx2.fill();
     cx2.strokeStyle='#fff';cx2.lineWidth=2;cx2.stroke();
   });
 }
